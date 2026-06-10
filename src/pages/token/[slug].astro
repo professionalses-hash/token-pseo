@@ -5,16 +5,11 @@ import TrustMeter from "../../components/TrustMeter.astro";
 import SecurityPanel from "../../components/SecurityPanel.astro";
 import Tokenomics from "../../components/Tokenomics.astro";
 import MarketAnalytics from "../../components/MarketAnalytics.astro";
-import { readFileSync } from "fs";
-import path from "path";
 
 export function getStaticPaths() {
-  let tokens = [];
-  try {
-    const dataPath = path.resolve("data/tokens.json");
-    tokens = JSON.parse(readFileSync(dataPath, "utf-8"));
-  } catch {}
-  return tokens.map((t) => ({
+  return Object.values(
+    import.meta.glob("../../../data/tokens.json", { eager: true })
+  ).map((m) => m.default).flat().map((t) => ({
     params: { slug: t.slug },
     props: { token: t },
   }));

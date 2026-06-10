@@ -1,13 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
 
-let tokens = [];
-try {
-  const dataPath = fileURLToPath(new URL("../../data/tokens.json", import.meta.url));
-  tokens = JSON.parse(readFileSync(dataPath, "utf-8"));
-} catch {}
+const tokens = Object.values(
+  import.meta.glob("../../data/tokens.json", { eager: true })
+).map((m) => m.default).flat();
 
 const tokenList = tokens.slice(0, 50);
 ---
