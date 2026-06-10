@@ -6,15 +6,14 @@ import SecurityPanel from "../../components/SecurityPanel.astro";
 import Tokenomics from "../../components/Tokenomics.astro";
 import MarketAnalytics from "../../components/MarketAnalytics.astro";
 import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-
-let tokens = [];
-try {
-  const dataPath = fileURLToPath(new URL("../../../data/tokens.json", import.meta.url));
-  tokens = JSON.parse(readFileSync(dataPath, "utf-8"));
-} catch {}
+import path from "path";
 
 export function getStaticPaths() {
+  let tokens = [];
+  try {
+    const dataPath = path.resolve("data/tokens.json");
+    tokens = JSON.parse(readFileSync(dataPath, "utf-8"));
+  } catch {}
   return tokens.map((t) => ({
     params: { slug: t.slug },
     props: { token: t },
