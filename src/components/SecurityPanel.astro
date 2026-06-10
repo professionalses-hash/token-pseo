@@ -1,0 +1,51 @@
+---
+interface Props {
+  security: {
+    liquidityLockedPct: number;
+    mintAuthority: string;
+    honeypotRisk: string;
+    holderCount: number;
+    contractAgeDays: number;
+  };
+}
+
+const { security } = Astro.props;
+
+const items = [
+  { label: "Liquidity Locked", value: `${security.liquidityLockedPct}%`, status: security.liquidityLockedPct >= 80 ? "safe" : security.liquidityLockedPct >= 50 ? "warning" : "danger", tip: "Percentage of liquidity tokens locked in contract" },
+  { label: "Mint Authority", value: security.mintAuthority, status: security.mintAuthority === "renounced" ? "safe" : "danger", tip: "Whether new tokens can be minted" },
+  { label: "Honeypot Risk", value: security.honeypotRisk, status: security.honeypotRisk === "none" ? "safe" : "danger", tip: "Whether selling is restricted" },
+  { label: "Holders", value: security.holderCount.toLocaleString(), status: security.holderCount >= 1000 ? "safe" : security.holderCount >= 100 ? "warning" : "danger", tip: "Total unique holders" },
+  { label: "Contract Age", value: `${security.contractAgeDays} days`, status: security.contractAgeDays >= 30 ? "safe" : security.contractAgeDays >= 7 ? "warning" : "danger", tip: "Days since contract creation" },
+];
+---
+
+<div class="security-panel">
+  <h3>Security Risk Panel</h3>
+  <div class="grid">
+    {items.map((item) => (
+      <div class="item" class:list={{ [item.status]: true }} title={item.tip}>
+        <span class="dot"></span>
+        <span class="label">{item.label}</span>
+        <span class="value">{item.value}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .security-panel { margin-bottom: 2rem; }
+  h3 { font-size: 1rem; color: #aaa; margin-bottom: 1rem; }
+  .grid { display: grid; gap: 0.5rem; }
+  .item {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.6rem 0.75rem; border-radius: 6px; background: #1a1a24;
+    cursor: help;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .safe .dot { background: #44cc66; }
+  .warning .dot { background: #ccaa22; }
+  .danger .dot { background: #dd4444; }
+  .label { flex: 1; font-size: 0.85rem; color: #ccc; }
+  .value { font-size: 0.85rem; color: #e8e8ed; font-weight: 600; }
+</style>

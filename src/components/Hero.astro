@@ -1,0 +1,61 @@
+---
+interface Props {
+  name: string;
+  symbol: string;
+  address: string;
+  network: string;
+}
+
+const { name, symbol, address, network } = Astro.props;
+---
+
+<div class="hero">
+  <div class="head">
+    <h1>{name} <span class="symbol">({symbol})</span></h1>
+    <span class="network-badge">{network}</span>
+  </div>
+  <div class="address-row">
+    <code class="address">{address}</code>
+    <button class="copy-btn" data-address={address}>Copy</button>
+  </div>
+  <div class="toast" id="toast">Copied!</div>
+</div>
+
+<script>
+  const btn = document.querySelector(".copy-btn");
+  const toast = document.getElementById("toast");
+  if (btn) {
+    btn.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(btn.dataset.address);
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1500);
+    });
+  }
+</script>
+
+<style>
+  .hero { margin-bottom: 2rem; }
+  .head { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  h1 { font-size: 1.75rem; color: #fff; }
+  .symbol { color: #888; font-weight: 400; }
+  .network-badge {
+    font-size: 0.75rem; background: #2a5a3a; color: #8f8;
+    padding: 0.15rem 0.6rem; border-radius: 4px; text-transform: uppercase;
+  }
+  .address-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; }
+  .address {
+    font-size: 0.8rem; color: #aaa; background: #1a1a24;
+    padding: 0.4rem 0.75rem; border-radius: 6px; word-break: break-all;
+  }
+  .copy-btn {
+    background: #3a3a4a; color: #fff; border: none; padding: 0.4rem 0.75rem;
+    border-radius: 6px; cursor: pointer; font-size: 0.8rem;
+  }
+  .copy-btn:hover { background: #4a4a5a; }
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    background: #2a5a3a; color: #8f8; padding: 0.5rem 1.5rem;
+    border-radius: 8px; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+</style>

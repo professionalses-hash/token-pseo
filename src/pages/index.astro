@@ -1,0 +1,60 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+
+let tokens = [];
+try {
+  const dataPath = fileURLToPath(new URL("../../data/tokens.json", import.meta.url));
+  tokens = JSON.parse(readFileSync(dataPath, "utf-8"));
+} catch {}
+
+const tokenList = tokens.slice(0, 50);
+---
+
+<BaseLayout title="Token PSEO - Security Audits & Scam Check" description="Live security analysis and trust scores for the latest tokens across Ethereum, BSC, and Solana.">
+  <header>
+    <h1>Token PSEO</h1>
+    <p>Security audits & trust scores for latest tokens</p>
+  </header>
+
+  <section>
+    <h2>Latest Tokens</h2>
+    {tokenList.length === 0 && <p>No tokens loaded yet. Run the scraper first.</p>}
+    <ul>
+      {tokenList.map((t) => (
+        <li>
+          <a href={`/token/${t.slug}`}>
+            <strong>{t.name}</strong> ({t.symbol})
+            <span class="score" data-score={t.trustScore}>{t.trustScore}/100</span>
+            <span class="network">{t.network || t.chain}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  header { margin-bottom: 2rem; }
+  h1 { font-size: 2rem; color: #fff; }
+  h2 { font-size: 1.25rem; margin-bottom: 1rem; color: #aaa; }
+  ul { list-style: none; display: grid; gap: 0.5rem; }
+  li a {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.75rem 1rem; background: #1a1a24; border-radius: 8px;
+    transition: background 0.2s;
+  }
+  li a:hover { background: #24243a; text-decoration: none; }
+  .score {
+    margin-left: auto; font-variant-numeric: tabular-nums;
+    color: var(--score-color, #888);
+  }
+  span[data-score] {
+    --score-color: hsl(calc(var(--score) * 1.2), 80%, 55%);
+  }
+  .network {
+    font-size: 0.75rem; background: #2a2a3a; padding: 0.15rem 0.5rem;
+    border-radius: 4px; color: #999;
+  }
+</style>

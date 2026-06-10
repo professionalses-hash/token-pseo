@@ -1,0 +1,45 @@
+---
+interface Props {
+  tokenomics: {
+    creatorPct: number;
+    top10Pct: number;
+    buyTax: number;
+    sellTax: number;
+  };
+}
+
+const { tokenomics } = Astro.props;
+
+const bars = [
+  { label: "Creator Holding", pct: tokenomics.creatorPct, color: "#6c8cff" },
+  { label: "Top 10 Holders", pct: tokenomics.top10Pct, color: "#cc6cff" },
+  { label: "Buy Tax", pct: tokenomics.buyTax, color: "#ff6c8c" },
+  { label: "Sell Tax", pct: tokenomics.sellTax, color: "#ffaa4c" },
+];
+---
+
+<div class="tokenomics">
+  <h3>Tokenomics</h3>
+  <div class="bars">
+    {bars.map((bar) => (
+      <div class="bar-row">
+        <span class="bar-label">{bar.label}</span>
+        <div class="bar-track">
+          <div class="bar-fill" style={`width: ${Math.min(bar.pct, 100)}%; background: ${bar.color};`}></div>
+        </div>
+        <span class="bar-value">{bar.pct}%</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .tokenomics { margin-bottom: 2rem; }
+  h3 { font-size: 1rem; color: #aaa; margin-bottom: 1rem; }
+  .bars { display: grid; gap: 0.75rem; }
+  .bar-row { display: grid; grid-template-columns: 120px 1fr 50px; align-items: center; gap: 0.75rem; }
+  .bar-label { font-size: 0.8rem; color: #ccc; }
+  .bar-track { height: 12px; background: #1a1a24; border-radius: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+  .bar-value { font-size: 0.8rem; color: #e8e8ed; text-align: right; font-variant-numeric: tabular-nums; }
+</style>

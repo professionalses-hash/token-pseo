@@ -1,0 +1,85 @@
+---
+interface Props {
+  score: number;
+  badges: {
+    liquidityLocked: boolean;
+    mintRenounced: boolean;
+    honeypot: boolean;
+    highConcentration: boolean;
+  };
+}
+
+const { score, badges } = Astro.props;
+
+const color =
+  score >= 86 ? "#4488ff" :
+  score >= 70 ? "#44cc66" :
+  score >= 31 ? "#ccaa22" :
+  "#dd4444";
+
+const rotation = -90 + (score / 100) * 180;
+---
+
+<div class="trust-meter">
+  <h3>Trust Score</h3>
+  <div class="gauge">
+    <div class="gauge-bg"></div>
+    <div class="gauge-fill" style={`--rotation: ${rotation}deg; --color: ${color};`}></div>
+    <div class="gauge-center">
+      <span class="score-value">{score}</span>
+      <span class="score-label">/ 100</span>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="badge" class:list={{ green: badges.liquidityLocked, red: !badges.liquidityLocked }}>
+      {badges.liquidityLocked ? "Liquidity Locked" : "Liquidity Unlocked"}
+    </span>
+    <span class="badge" class:list={{ green: badges.mintRenounced, red: !badges.mintRenounced }}>
+      {badges.mintRenounced ? "Mint Renounced" : "Mint Active"}
+    </span>
+    <span class="badge" class:list={{ green: !badges.honeypot, red: badges.honeypot }}>
+      {badges.honeypot ? "Honeypot Risk" : "No Honeypot"}
+    </span>
+    <span class="badge" class:list={{ green: !badges.highConcentration, red: badges.highConcentration }}>
+      {badges.highConcentration ? "High Concentration" : "Good Distribution"}
+    </span>
+  </div>
+</div>
+
+<style>
+  .trust-meter { margin-bottom: 2rem; }
+  h3 { font-size: 1rem; color: #aaa; margin-bottom: 1rem; }
+  .gauge {
+    position: relative; width: 200px; height: 100px; overflow: hidden;
+    margin: 0 auto 1.5rem;
+  }
+  .gauge-bg {
+    width: 200px; height: 200px; border-radius: 50%;
+    background: conic-gradient(
+      #dd4444 0deg 54deg,
+      #ccaa22 54deg 126deg,
+      #44cc66 126deg 153deg,
+      #4488ff 153deg 180deg
+    );
+    position: absolute; top: 0;
+  }
+  .gauge-fill {
+    width: 200px; height: 200px; border-radius: 50%;
+    position: absolute; top: 0;
+    background: conic-gradient(var(--color) 0deg var(--rotation), #222 0deg);
+    mask: radial-gradient(circle at 50% 100%, transparent 65px, #000 66px);
+    -webkit-mask: radial-gradient(circle at 50% 100%, transparent 65px, #000 66px);
+  }
+  .gauge-center {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -30%);
+    text-align: center;
+  }
+  .score-value { font-size: 2.5rem; font-weight: 700; color: var(--color, #fff); display: block; }
+  .score-label { font-size: 0.75rem; color: #888; }
+  .badges { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .badge {
+    font-size: 0.75rem; padding: 0.3rem 0.7rem; border-radius: 6px;
+  }
+  .badge.green { background: #1a3a2a; color: #6c6; }
+  .badge.red { background: #3a1a1a; color: #c66; }
+</style>
