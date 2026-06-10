@@ -1,8 +1,6 @@
 import { defineConfig } from "astro/config";
-import cloudflare from "@astrojs/cloudflare";
 
 export default defineConfig({
-  output: "hybrid",
-  adapter: cloudflare(),
+  output: "static",
   site: "https://token-pseo.pages.dev",
 });
