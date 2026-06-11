@@ -1,4 +1,5 @@
 import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 DEXSCREENER_SEARCH = "https://api.dexscreener.com/latest/dex/search?q={query}"
 
@@ -6,41 +7,40 @@ SUPPORTED_CHAINS = {"ethereum", "bsc", "solana"}
 
 SEARCH_KEYWORDS = [
     "coin", "token", "moon", "doge", "pepe", "cat", "dog", "baby",
-    "ai", "grok", "eth", "sol", "btc", "ai16z", "trump", "musk",
-    "rocket", "star", "moon", "safe", "shib", "floki", "bonk", "woof",
-    "pump", "fun", "kitteh", "sats", "fish", "dragon", "panda", "chad",
-    "maga", "vote", "president", "win", "meme", "cum", "troll", "giggle",
-    "wen", "lambo", "hodl", "diamond", "ape", "based", "chill", "wagmi",
+    "ai", "eth", "sol", "trump", "musk", "safe", "shib", "bonk",
+    "pump", "meme", "wen", "hodl", "ape", "based",
 ]
 
 
 def discover_from_search():
     seen = set()
     tokens = []
-    for keyword in SEARCH_KEYWORDS:
-        results = _search(keyword)
-        for pair in results:
-            base = pair.get("baseToken") or {}
-            address = base.get("address")
-            chain = (pair.get("chainId") or "").lower()
-            if not address or chain not in SUPPORTED_CHAINS:
-                continue
-            if address in seen:
-                continue
-            seen.add(address)
-            tokens.append({
-                "address": address,
-                "chain": chain,
-                "name": base.get("name", ""),
-                "symbol": base.get("symbol", ""),
-                "url": pair.get("url", ""),
-            })
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        futures = {pool.submit(_search, kw): kw for kw in SEARCH_KEYWORDS}
+        for future in as_completed(futures):
+            results = future.result()
+            for pair in results:
+                base = pair.get("baseToken") or {}
+                address = base.get("address")
+                chain = (pair.get("chainId") or "").lower()
+                if not address or chain not in SUPPORTED_CHAINS:
+                    continue
+                if address in seen:
+                    continue
+                seen.add(address)
+                tokens.append({
+                    "address": address,
+                    "chain": chain,
+                    "name": base.get("name", ""),
+                    "symbol": base.get("symbol", ""),
+                    "url": pair.get("url", ""),
+                })
     return tokens
 
 
 def _search(query):
     try:
-        resp = requests.get(DEXSCREENER_SEARCH.format(query=query), timeout=15)
+        resp = requests.get(DEXSCREENER_SEARCH.format(query=query), timeout=10)
         resp.raise_for_status()
         data = resp.json()
         return data.get("pairs") or []
