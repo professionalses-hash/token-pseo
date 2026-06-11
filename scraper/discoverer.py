@@ -32,7 +32,7 @@ def discover_tokens():
 
 def _fetch(url):
     try:
-        resp = requests.get(url, timeout=15)
+        resp = requests.get(url, timeout=10)
         resp.raise_for_status()
         return resp.json()
     except Exception:

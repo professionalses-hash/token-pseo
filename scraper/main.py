@@ -1,5 +1,6 @@
 import sys
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -48,20 +49,22 @@ def slugify(name):
 
 
 def run():
-    import sys
-    print("Starting scraper...", flush=True)
-    sys.stdout.flush()
-
     discovered = discover_tokens()
     print(f"Discovered {len(discovered)} tokens", flush=True)
-    sys.stdout.flush()
 
     enriched = []
-    for token in discovered:
-        result = enrich(token)
-        if result:
-            result["slug"] = slugify(result.get("name", "unknown"))
-            enriched.append(result)
+    with ThreadPoolExecutor(max_workers=10) as pool:
+        futures = {pool.submit(enrich, t): t for t in discovered}
+        for future in as_completed(futures):
+            try:
+                result = future.result(timeout=30)
+            except Exception:
+                result = None
+            if result:
+                result["slug"] = slugify(result.get("name", "unknown"))
+                enriched.append(result)
+
+    print(f"Enriched {len(enriched)}", flush=True)
 
     ranked = filter_and_rank(enriched)
 
