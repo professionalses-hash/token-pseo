@@ -18,6 +18,12 @@ const color =
   "#dd4444";
 
 const rotation = -90 + (score / 100) * 180;
+
+const summary =
+  score >= 86 ? "Excellent — this token has strong security, high liquidity, and a healthy holder distribution. Low risk." :
+  score >= 70 ? "Good — solid security profile with manageable risks. Always do your own research." :
+  score >= 31 ? "Moderate — some risk factors detected. Review the security badges below carefully." :
+  "Poor — multiple red flags detected. High risk of scam or honeypot. Proceed with extreme caution.";
 ---
 
 <div class="trust-meter">
@@ -30,6 +36,7 @@ const rotation = -90 + (score / 100) * 180;
       <span class="score-label">/ 100</span>
     </div>
   </div>
+  <p class="summary">{summary}</p>
   <div class="badges">
     <span class="badge" class:list={{ green: badges.liquidityLocked, red: !badges.liquidityLocked }}>
       {badges.liquidityLocked ? "Liquidity Locked" : "Liquidity Unlocked"}
@@ -82,4 +89,8 @@ const rotation = -90 + (score / 100) * 180;
   }
   .badge.green { background: #1a3a2a; color: #6c6; }
   .badge.red { background: #3a1a1a; color: #c66; }
+  .summary {
+    text-align: center; font-size: 0.85rem; line-height: 1.4;
+    color: #bbb; max-width: 280px; margin: 0 auto 1rem;
+  }
 </style>
