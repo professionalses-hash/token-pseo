@@ -1,4 +1,5 @@
 import requests
+from sources.dexsearch import discover_from_search
 
 DEXSCREENER_PROFILES = "https://api.dexscreener.com/token-profiles/latest/v1"
 DEXSCREENER_BOOSTS = "https://api.dexscreener.com/token-boosts/latest/v1"
@@ -9,6 +10,7 @@ SUPPORTED_CHAINS = {"ethereum", "bsc", "solana"}
 def discover_tokens():
     profiles = _fetch(DEXSCREENER_PROFILES)
     boosts = _fetch(DEXSCREENER_BOOSTS)
+    search = discover_from_search()
     seen = set()
     tokens = []
     for entry in profiles + boosts:
@@ -16,6 +18,10 @@ def discover_tokens():
         if token and token["address"] not in seen:
             seen.add(token["address"])
             tokens.append(token)
+    for entry in search:
+        if entry["address"] not in seen:
+            seen.add(entry["address"])
+            tokens.append(entry)
     return tokens
 
 
