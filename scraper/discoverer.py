@@ -8,9 +8,14 @@ SUPPORTED_CHAINS = {"ethereum", "bsc", "solana"}
 
 
 def discover_tokens():
+    print("Fetching profiles...", flush=True)
     profiles = _fetch(DEXSCREENER_PROFILES)
+    print(f"Profiles: {len(profiles)}", flush=True)
     boosts = _fetch(DEXSCREENER_BOOSTS)
+    print(f"Boosts: {len(boosts)}", flush=True)
+    print("Searching keywords...", flush=True)
     search = discover_from_search()
+    print(f"Search results: {len(search)}", flush=True)
     seen = set()
     tokens = []
     for entry in profiles + boosts:

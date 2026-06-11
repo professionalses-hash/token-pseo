@@ -48,7 +48,14 @@ def slugify(name):
 
 
 def run():
+    import sys
+    print("Starting scraper...", flush=True)
+    sys.stdout.flush()
+
     discovered = discover_tokens()
+    print(f"Discovered {len(discovered)} tokens", flush=True)
+    sys.stdout.flush()
+
     enriched = []
     for token in discovered:
         result = enrich(token)
