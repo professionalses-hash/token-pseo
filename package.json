@@ -9,5 +9,8 @@
   },
   "dependencies": {
     "astro": "^4.15.0"
+  },
+  "devDependencies": {
+    "tweetsodium": "^0.0.4"
   }
 }

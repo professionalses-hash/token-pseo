@@ -32,14 +32,13 @@ def _normalize(entry):
     chain = (entry.get("chainId") or "").lower()
     if chain not in SUPPORTED_CHAINS:
         return None
-    base = entry.get("baseToken") or {}
-    address = base.get("address")
+    address = entry.get("tokenAddress")
     if not address:
         return None
     return {
         "address": address,
         "chain": chain,
-        "name": base.get("name", ""),
-        "symbol": base.get("symbol", ""),
+        "name": "",
+        "symbol": "",
         "url": entry.get("url", ""),
     }

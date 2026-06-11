@@ -12,7 +12,10 @@ def fetch_market(address):
         if not pairs:
             return None
         pair = max(pairs, key=lambda p: float(p.get("liquidity", {}).get("usd", 0) or 0))
+        base = pair.get("baseToken") or {}
         return {
+            "name": base.get("name", ""),
+            "symbol": base.get("symbol", ""),
             "priceUsd": _safe_float(pair, "priceUsd"),
             "marketCap": _safe_float(pair, "fdv"),
             "liquidityUsd": _safe_float(pair, "liquidity", "usd"),

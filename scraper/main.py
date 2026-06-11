@@ -17,6 +17,11 @@ def enrich(token):
     if not market or not security:
         return None
 
+    if market.get("name"):
+        token["name"] = market["name"]
+    if market.get("symbol"):
+        token["symbol"] = market["symbol"]
+
     token["market"] = market
     token["security"] = security
     token["tokenomics"] = {
