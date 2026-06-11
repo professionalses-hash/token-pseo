@@ -22,7 +22,10 @@ def enrich(token):
     if market.get("symbol"):
         token["symbol"] = market["symbol"]
 
-    token["market"] = market
+    token["network"] = token.get("chain", "")
+
+    market_clean = {k: v for k, v in market.items() if k not in ("name", "symbol")}
+    token["market"] = market_clean
     token["security"] = security
     token["tokenomics"] = {
         "creatorPct": security.get("creatorBalance", 0),
