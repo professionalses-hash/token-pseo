@@ -36,7 +36,7 @@ const desc = `Live security analysis for ${token.name}. Trust Score: ${token.tru
     <div class="page-grid">
       <div class="left">
         <Hero name={token.name} symbol={token.symbol} address={token.address} network={token.network || token.chain} />
-        <TrustMeter score={token.trustScore} badges={token.badges} />
+        <TrustMeter score={token.trustScore} name={token.name} badges={token.badges} />
         <SecurityPanel security={token.security} />
       </div>
       <div class="right">

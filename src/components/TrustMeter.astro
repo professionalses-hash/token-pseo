@@ -1,6 +1,7 @@
 ---
 interface Props {
   score: number;
+  name: string;
   badges: {
     liquidityLocked: boolean;
     mintRenounced: boolean;
@@ -9,7 +10,7 @@ interface Props {
   };
 }
 
-const { score, badges } = Astro.props;
+const { score, name, badges } = Astro.props;
 
 const color =
   score >= 86 ? "#4488ff" :
@@ -19,11 +20,35 @@ const color =
 
 const rotation = -90 + (score / 100) * 180;
 
-const summary =
-  score >= 86 ? "Excellent — this token has strong security, high liquidity, and a healthy holder distribution. Low risk." :
-  score >= 70 ? "Good — solid security profile with manageable risks. Always do your own research." :
-  score >= 31 ? "Moderate — some risk factors detected. Review the security badges below carefully." :
-  "Poor — multiple red flags detected. High risk of scam or honeypot. Proceed with extreme caution.";
+const excellent = [
+  "Excellent — {name} shows strong security, high liquidity, and healthy holder distribution. Low risk.",
+  "{name} passes all core security checks with confidence. One of the safer tokens analyzed.",
+  "Top-tier security rating for {name}. All major risk indicators are clear.",
+];
+const good = [
+  "Good — {name} has a solid security profile with manageable risks. Always do your own research.",
+  "{name} displays good security fundamentals. Minor risk factors were detected but none critical.",
+  "Above-average trust score for {name}. Proceed with standard caution.",
+];
+const moderate = [
+  "Moderate — our audit detected some risk factors in {name}. Review the badges below carefully.",
+  "Analysis indicates {name} carries a moderate risk profile due to current tokenomics or liquidity.",
+  "{name} has mixed security signals. Several factors need closer inspection before investing.",
+];
+const poor = [
+  "Poor — multiple red flags detected for {name}. High risk of scam or honeypot. Extreme caution advised.",
+  "{name} triggered several critical security warnings. Strongly recommend avoiding this token.",
+  "High-risk alert for {name}. Our scan found dangerous patterns consistent with malicious tokens.",
+];
+
+const pool =
+  score >= 86 ? excellent :
+  score >= 70 ? good :
+  score >= 31 ? moderate :
+  poor;
+
+const rand = Math.floor(Math.random() * pool.length);
+const summary = pool[rand].replace(/\{name\}/g, name);
 ---
 
 <div class="trust-meter">
