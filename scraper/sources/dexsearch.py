@@ -7,6 +7,10 @@ SUPPORTED_CHAINS = {"ethereum", "bsc", "solana"}
 SEARCH_KEYWORDS = [
     "coin", "token", "moon", "doge", "pepe", "cat", "dog", "baby",
     "ai", "grok", "eth", "sol", "btc", "ai16z", "trump", "musk",
+    "rocket", "star", "moon", "safe", "shib", "floki", "bonk", "woof",
+    "pump", "fun", "kitteh", "sats", "fish", "dragon", "panda", "chad",
+    "maga", "vote", "president", "win", "meme", "cum", "troll", "giggle",
+    "wen", "lambo", "hodl", "diamond", "ape", "based", "chill", "wagmi",
 ]
 
 

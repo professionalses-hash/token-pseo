@@ -1,5 +1,5 @@
-MIN_LIQUIDITY = 500
-MAX_TAX = 15
+MIN_LIQUIDITY = 200
+MAX_TAX = 25
 
 
 def calculate_potential(token):
