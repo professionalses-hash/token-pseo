@@ -1,4 +1,6 @@
 ---
+import NavBar from "../components/NavBar.astro";
+
 interface Props {
   title: string;
   description: string;
@@ -29,6 +31,7 @@ const { title, description } = Astro.props;
     </style>
   </head>
   <body>
+    <NavBar />
     <div class="container">
       <slot />
     </div>

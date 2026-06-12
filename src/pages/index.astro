@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import TokenCard from "../components/TokenCard.astro";
 
 const tokens = Object.values(
   import.meta.glob("../../data/tokens.json", { eager: true })
@@ -8,49 +9,130 @@ const tokens = Object.values(
 const tokenList = tokens.slice(0, 50);
 ---
 
-<BaseLayout title="Token PSEO - Security Audits & Scam Check" description="Live security analysis and trust scores for the latest tokens across Ethereum, BSC, and Solana.">
-  <header>
-    <h1>Token PSEO</h1>
-    <p>Security audits & trust scores for latest tokens</p>
-  </header>
+<BaseLayout title="Token PSEO — Security Audits & Trust Scores" description="Live security analysis and trust scores for the latest tokens across Ethereum, BSC, and Solana.">
+  <section class="hero">
+    <h1>Token Security <span class="hl">Audits</span></h1>
+    <p class="sub">Real-time trust scores, security analysis & scam detection for <strong>{tokenList.length}+</strong> tokens across Ethereum, BSC & Solana.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-num">{tokenList.length}</span>
+        <span class="hero-label">Tokens Tracked</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-num">{tokenList.filter(t => t.trustScore >= 70).length}</span>
+        <span class="hero-label">Safe Tokens</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-num">{tokenList.filter(t => t.trustScore < 31).length}</span>
+        <span class="hero-label">High Risk</span>
+      </div>
+    </div>
+  </section>
 
-  <section>
-    <h2>Latest Tokens</h2>
-    {tokenList.length === 0 && <p>No tokens loaded yet. Run the scraper first.</p>}
-    <ul>
+  <section class="list">
+    <div class="list-header">
+      <h2>Token Audit Index</h2>
+      <span class="list-count">{tokenList.length} tokens</span>
+    </div>
+    {tokenList.length === 0 && <p class="empty">No tokens loaded yet. Run the scraper first.</p>}
+    <div class="grid">
       {tokenList.map((t) => (
-        <li>
-          <a href={`/token/${t.slug}`}>
-            <strong>{t.name}</strong> ({t.symbol})
-            <span class="score" data-score={t.trustScore}>{t.trustScore}/100</span>
-            <span class="network">{t.network || t.chain}</span>
-          </a>
-        </li>
+        <TokenCard
+          name={t.name}
+          symbol={t.symbol}
+          network={t.network || t.chain}
+          trustScore={t.trustScore}
+          priceUsd={t.market.priceUsd}
+          marketCap={t.market.marketCap}
+          liquidityUsd={t.market.liquidityUsd}
+          slug={t.slug}
+        />
       ))}
-    </ul>
+    </div>
   </section>
 </BaseLayout>
 
 <style>
-  header { margin-bottom: 2rem; }
-  h1 { font-size: 2rem; color: #fff; }
-  h2 { font-size: 1.25rem; margin-bottom: 1rem; color: #aaa; }
-  ul { list-style: none; display: grid; gap: 0.5rem; }
-  li a {
-    display: flex; align-items: center; gap: 1rem;
-    padding: 0.75rem 1rem; background: #1a1a24; border-radius: 8px;
-    transition: background 0.2s;
+  .hero {
+    text-align: center;
+    padding: 3rem 0 2.5rem;
   }
-  li a:hover { background: #24243a; text-decoration: none; }
-  .score {
-    margin-left: auto; font-variant-numeric: tabular-nums;
-    color: var(--score-color, #888);
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
   }
-  span[data-score] {
-    --score-color: hsl(calc(var(--score) * 1.2), 80%, 55%);
+  .hl {
+    background: linear-gradient(135deg, #6c8cff, #8c6cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  .network {
-    font-size: 0.75rem; background: #2a2a3a; padding: 0.15rem 0.5rem;
-    border-radius: 4px; color: #999;
+  .sub {
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    color: #888;
+    max-width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+  .sub strong { color: #bbb; }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-top: 2rem;
+  }
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero-num {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-label {
+    font-size: 0.75rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 0.15rem;
+  }
+  .list-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0 0.25rem;
+  }
+  .list-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ddd;
+  }
+  .list-count {
+    font-size: 0.8rem;
+    color: #555;
+  }
+  .grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .empty {
+    text-align: center;
+    color: #666;
+    padding: 3rem 0;
+  }
+  @media (max-width: 600px) {
+    h1 { font-size: 1.75rem; }
+    .hero { padding: 2rem 0 1.5rem; }
+    .hero-stats { gap: 1.5rem; }
   }
 </style>

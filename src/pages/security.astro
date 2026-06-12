@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Security Center — Token PSEO" description="Comprehensive token security analysis tools and resources.">
+  <section class="page">
+    <h1>Security Center</h1>
+    <p class="desc">In-depth security analysis tools for token contracts across Ethereum, BSC, and Solana.</p>
+    <div class="cards">
+      <div class="card">
+        <h2>Contract Audit</h2>
+        <p>Run a full security audit on any token contract address.</p>
+      </div>
+      <div class="card">
+        <h2>Liquidity Check</h2>
+        <p>Verify liquidity locks, burns, and pool health in real-time.</p>
+      </div>
+      <div class="card">
+        <h2>Honeypot Scanner</h2>
+        <p>Detect sell restrictions, high taxes, and malicious token patterns.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding: 2rem 0; }
+  h1 { font-size: 1.75rem; color: #fff; margin-bottom: 0.5rem; }
+  .desc { color: #888; margin-bottom: 2rem; }
+  .cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .card {
+    background: #1a1a24; border-radius: 10px; padding: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .card h2 { font-size: 1rem; color: #fff; margin-bottom: 0.5rem; }
+  .card p { font-size: 0.85rem; color: #888; line-height: 1.5; }
+</style>

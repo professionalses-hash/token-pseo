@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Audit Tools — Token PSEO" description="Free token audit tools: check any contract for security risks, scams, and red flags.">
+  <section class="page">
+    <h1>Audit Tools</h1>
+    <p class="desc">Paste any contract address to run a comprehensive audit powered by GoPlus, DexScreener, and on-chain data.</p>
+    <div class="search-box">
+      <input type="text" placeholder="Enter contract address..." disabled />
+      <button disabled>Audit</button>
+    </div>
+    <p class="note">Coming soon — enter any token address for an instant security report.</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding: 2rem 0; }
+  h1 { font-size: 1.75rem; color: #fff; margin-bottom: 0.5rem; }
+  .desc { color: #888; margin-bottom: 2rem; max-width: 600px; }
+  .search-box { display: flex; gap: 0.5rem; max-width: 480px; }
+  .search-box input {
+    flex: 1; padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid #2a2a3a;
+    background: #1a1a24; color: #888; font-size: 0.85rem; outline: none;
+  }
+  .search-box button {
+    padding: 0.6rem 1.25rem; border-radius: 8px; border: none;
+    background: #3a3a4a; color: #666; font-size: 0.85rem; cursor: not-allowed;
+  }
+  .note { font-size: 0.8rem; color: #555; margin-top: 1rem; }
+</style>

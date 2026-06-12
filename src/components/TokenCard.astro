@@ -1,0 +1,186 @@
+---
+interface Props {
+  name: string;
+  symbol: string;
+  network: string;
+  trustScore: number;
+  priceUsd: number;
+  marketCap: number;
+  liquidityUsd: number;
+  slug: string;
+}
+
+const { name, symbol, network, trustScore, priceUsd, marketCap, liquidityUsd, slug } = Astro.props;
+
+const scoreColor =
+  trustScore >= 86 ? "#4488ff" :
+  trustScore >= 70 ? "#44cc66" :
+  trustScore >= 31 ? "#ccaa22" :
+  "#dd4444";
+
+const pct = trustScore;
+
+function fmtPrice(n: number): string {
+  if (n < 0.0001) return `$${n.toExponential(2)}`;
+  if (n < 1) return `$${n.toFixed(6)}`;
+  return `$${n.toFixed(4)}`;
+}
+
+function fmt(n: number): string {
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
+  if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
+  return `$${n.toFixed(2)}`;
+}
+---
+
+<a href={`/token/${slug}`} class="card">
+  <div class="card-body">
+    <div class="card-left">
+      <div class="token-head">
+        <span class="name">{name}</span>
+        <span class="symbol">{symbol}</span>
+        <span class="network">{network}</span>
+      </div>
+      <div class="token-meta">
+        <span class="meta-item price">{fmtPrice(priceUsd)}</span>
+        <span class="meta-divider"></span>
+        <span class="meta-item">{fmt(marketCap)} MC</span>
+        <span class="meta-divider"></span>
+        <span class="meta-item">{fmt(liquidityUsd)} Liq</span>
+      </div>
+    </div>
+    <div class="card-right">
+      <div class="ring-wrap">
+        <svg class="ring" viewBox="0 0 64 64" width="58" height="58">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="#1e1e2a" stroke-width="4" />
+          <circle cx="32" cy="32" r="26" fill="none" stroke={scoreColor} stroke-width="4"
+            stroke-linecap="round" stroke-dasharray={`${(pct / 100) * 163.36} 163.36`}
+            stroke-dashoffset="0" transform="rotate(-90 32 32)"
+            class="ring-arc" />
+        </svg>
+        <span class="ring-score" style={`color: ${scoreColor}`}>{trustScore}</span>
+      </div>
+    </div>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: block;
+    background: linear-gradient(135deg, rgba(26,26,36,0.8) 0%, rgba(22,22,32,0.9) 100%);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(108,140,255,0.15), rgba(255,255,255,0.04));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .card:hover {
+    border-color: rgba(108,140,255,0.2);
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, rgba(30,30,42,0.9) 0%, rgba(26,26,38,0.95) 100%);
+    text-decoration: none;
+  }
+  .card:hover::before {
+    background: linear-gradient(135deg, rgba(108,140,255,0.3), rgba(255,255,255,0.08));
+  }
+  .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    gap: 1rem;
+  }
+  .card-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+  .token-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .symbol {
+    font-size: 0.8rem;
+    color: #666;
+  }
+  .network {
+    font-size: 0.65rem;
+    background: rgba(42,90,58,0.3);
+    color: #8f8;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid rgba(136,255,136,0.15);
+  }
+  .token-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    font-size: 0.78rem;
+    color: #888;
+    font-variant-numeric: tabular-nums;
+  }
+  .meta-item.price {
+    color: #aaa;
+  }
+  .meta-divider {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #444;
+  }
+  .card-right {
+    flex-shrink: 0;
+  }
+  .ring-wrap {
+    position: relative;
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ring {
+    display: block;
+  }
+  .ring-arc {
+    animation: sweep 1.2s ease-out forwards;
+    opacity: 0;
+    animation-fill-mode: forwards;
+  }
+  @keyframes sweep {
+    0% { opacity: 1; }
+    100% { opacity: 1; }
+  }
+  .ring-score {
+    position: absolute;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

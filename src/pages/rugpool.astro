@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const tokens = Object.values(
+  import.meta.glob("../../data/tokens.json", { eager: true })
+).map((m) => m.default).flat();
+
+const rugRisk = tokens.filter(t => t.trustScore < 31).sort((a, b) => a.trustScore - b.trustScore);
+---
+
+<BaseLayout title="Rugpool Reports — Token PSEO" description="Track high-risk tokens, potential scams, and rugpool warnings across all networks.">
+  <section class="page">
+    <h1>Rugpool Reports</h1>
+    <p class="desc">Tokens flagged as high-risk by our analysis engine. These show critical security warnings.</p>
+    {rugRisk.length === 0 && <p class="empty">No high-risk tokens detected in current scan data.</p>}
+    <div class="list">
+      {rugRisk.map((t) => (
+        <a href={`/token/${t.slug}`} class="item">
+          <span class="name">{t.name} <span class="sym">({t.symbol})</span></span>
+          <span class="score">{t.trustScore}/100</span>
+          <span class="network">{t.network || t.chain}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding: 2rem 0; }
+  h1 { font-size: 1.75rem; color: #fff; margin-bottom: 0.5rem; }
+  .desc { color: #888; margin-bottom: 2rem; }
+  .list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .item {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.75rem 1rem; background: #1a1a24; border-radius: 8px;
+    border: 1px solid rgba(221,68,68,0.2); transition: background 0.2s;
+  }
+  .item:hover { background: #24243a; text-decoration: none; }
+  .name { font-size: 0.9rem; color: #ddd; }
+  .sym { color: #666; font-size: 0.8rem; }
+  .score { margin-left: auto; color: #dd4444; font-weight: 600; }
+  .network { font-size: 0.7rem; color: #666; background: #2a2a3a; padding: 0.1rem 0.5rem; border-radius: 4px; }
+  .empty { color: #666; text-align: center; padding: 3rem 0; }
+</style>
