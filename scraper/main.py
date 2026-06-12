@@ -48,6 +48,25 @@ def slugify(name):
     return name.lower().replace(" ", "-").replace("_", "-")[:64]
 
 
+def backfill_socials(existing):
+    to_fill = [t for t in existing if not t.get("market", {}).get("socials")]
+    if not to_fill:
+        return
+    print(f"Backfilling socials for {len(to_fill)} tokens...", flush=True)
+    with ThreadPoolExecutor(max_workers=10) as pool:
+        futures = {pool.submit(fetch_market, t["address"]): t for t in to_fill}
+        for future in as_completed(futures):
+            try:
+                market = future.result(timeout=15)
+            except Exception:
+                continue
+            if market and market.get("socials"):
+                token = futures[future]
+                token.setdefault("market", {})["socials"] = market["socials"]
+                if market.get("website"):
+                    token["market"]["website"] = market["website"]
+
+
 def run():
     discovered = discover_tokens()
     print(f"Discovered {len(discovered)} tokens", flush=True)
@@ -69,6 +88,7 @@ def run():
     ranked = filter_and_rank(enriched)
 
     existing = load_tokens()
+    backfill_socials(existing)
     seen = {t["address"] for t in existing}
     for t in ranked:
         if t["address"] not in seen:
