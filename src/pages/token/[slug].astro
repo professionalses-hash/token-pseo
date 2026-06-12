@@ -20,9 +20,10 @@ const { token } = Astro.props;
 
 const title = `${token.name} (${token.symbol}) Contract Security Audit, Chart & Scam Check`;
 const desc = `Live security analysis for ${token.name}. Trust Score: ${token.trustScore}/100. Check contract security, tokenomics, and market data.`;
+const canonical = `https://cryptdoctor52.xyz/token/${token.slug}/`;
 ---
 
-<BaseLayout title={title} description={desc}>
+<BaseLayout title={title} description={desc} canonical={canonical}>
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "TechArticle",

@@ -44,8 +44,14 @@ def enrich(token):
     return token
 
 
-def slugify(name):
-    return name.lower().replace(" ", "-").replace("_", "-")[:64]
+import re
+
+def slugify(name, address=""):
+    base = name.lower().replace(" ", "-").replace("_", "-")
+    base = re.sub(r"[^a-z0-9-]", "", base)[:48].strip("-")
+    if address:
+        base += "-" + address[-8:]
+    return base or "token"
 
 
 def backfill_socials(existing):
@@ -80,7 +86,7 @@ def run():
             except Exception:
                 result = None
             if result:
-                result["slug"] = slugify(result.get("name", "unknown"))
+                result["slug"] = slugify(result.get("name", "unknown"), result.get("address", ""))
                 enriched.append(result)
 
     print(f"Enriched {len(enriched)}", flush=True)
