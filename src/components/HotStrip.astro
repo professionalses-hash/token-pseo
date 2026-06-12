@@ -1,0 +1,118 @@
+---
+interface Token {
+  name: string;
+  symbol: string;
+  trustScore: number;
+  slug: string;
+}
+
+interface Props {
+  tokens: Token[];
+}
+
+const { tokens } = Astro.props;
+const hot = tokens.sort((a, b) => b.trustScore - a.trustScore).slice(0, 12);
+const dup = [...hot, ...hot];
+---
+
+<section class="hot-section">
+  <div class="hot-header">
+    <span class="hot-label">Hot Tokens</span>
+    <span class="hot-count">{hot.length}</span>
+  </div>
+  <div class="hot-track-wrap">
+    <div class="hot-track">
+      {dup.map((t) => {
+        const color =
+          t.trustScore >= 86 ? "#4488ff" :
+          t.trustScore >= 70 ? "#44cc66" :
+          t.trustScore >= 31 ? "#ccaa22" :
+          "#dd4444";
+        return (
+          <a href={`/token/${t.slug}`} class="hot-chip">
+            <span class="chip-name">{t.name}</span>
+            <span class="chip-sym">{t.symbol}</span>
+            <span class="chip-score" style={`color: ${color}`}>{t.trustScore}</span>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hot-section {
+    margin: 1.5rem 0 2rem;
+  }
+  .hot-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0 0.25rem;
+  }
+  .hot-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ddd;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .hot-count {
+    font-size: 0.7rem;
+    color: #555;
+    background: #1a1a24;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+  }
+  .hot-track-wrap {
+    overflow: hidden;
+    mask: linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%);
+    -webkit-mask: linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%);
+  }
+  .hot-track {
+    display: flex;
+    gap: 0.5rem;
+    width: max-content;
+    animation: scroll 30s linear infinite;
+  }
+  .hot-track:hover {
+    animation-play-state: paused;
+  }
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .hot-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    background: linear-gradient(135deg, rgba(26,26,36,0.7), rgba(22,22,32,0.8));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .hot-chip:hover {
+    border-color: rgba(108,140,255,0.25);
+    background: rgba(30,30,42,0.9);
+    text-decoration: none;
+  }
+  .chip-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .chip-sym {
+    font-size: 0.7rem;
+    color: #666;
+  }
+  .chip-score {
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    margin-left: 0.15rem;
+  }
+</style>

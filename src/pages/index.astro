@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import TokenCard from "../components/TokenCard.astro";
+import HotStrip from "../components/HotStrip.astro";
 
 const tokens = Object.values(
   import.meta.glob("../../data/tokens.json", { eager: true })
@@ -28,6 +29,8 @@ const tokenList = tokens.slice(0, 50);
       </div>
     </div>
   </section>
+
+  <HotStrip tokens={tokenList} />
 
   <section class="list">
     <div class="list-header">
