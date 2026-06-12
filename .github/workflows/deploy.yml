@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'push' || (github.event.workflow_run && github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
           command: pages deploy dist/ --project-name=token-pseo
 
       - name: Trigger next scrape cycle
-        if: ${{ github.event.workflow_run.event == 'schedule' }}
+        if: ${{ github.event_name != 'push' && github.event.workflow_run && github.event.workflow_run.event == 'schedule' }}
         run: gh workflow run scrape.yml --ref main
         env:
           GH_TOKEN: ${{ github.token }}
