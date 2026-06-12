@@ -5,6 +5,7 @@ import TrustMeter from "../../components/TrustMeter.astro";
 import SecurityPanel from "../../components/SecurityPanel.astro";
 import Tokenomics from "../../components/Tokenomics.astro";
 import MarketAnalytics from "../../components/MarketAnalytics.astro";
+import SocialLinks from "../../components/SocialLinks.astro";
 
 export function getStaticPaths() {
   return Object.values(
@@ -42,6 +43,7 @@ const desc = `Live security analysis for ${token.name}. Trust Score: ${token.tru
       <div class="right">
         <Tokenomics tokenomics={token.tokenomics} />
         <MarketAnalytics market={token.market} address={token.address} network={token.network || token.chain} />
+        <SocialLinks socials={token.market.socials} website={token.market.website} />
       </div>
     </div>
   </main>

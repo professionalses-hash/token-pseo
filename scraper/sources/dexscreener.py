@@ -13,6 +13,14 @@ def fetch_market(address):
             return None
         pair = max(pairs, key=lambda p: float(p.get("liquidity", {}).get("usd", 0) or 0))
         base = pair.get("baseToken") or {}
+        info = pair.get("info") or {}
+        socials = {}
+        for s in info.get("socials") or []:
+            t = s.get("type", "").lower()
+            u = s.get("url", "")
+            if t and u:
+                socials[t] = u
+        websites = [w.get("url", "") for w in info.get("websites") or [] if w.get("url")]
         return {
             "name": base.get("name", ""),
             "symbol": base.get("symbol", ""),
@@ -20,6 +28,8 @@ def fetch_market(address):
             "marketCap": _safe_float(pair, "fdv"),
             "liquidityUsd": _safe_float(pair, "liquidity", "usd"),
             "volume24h": _safe_float(pair, "volume", "h24"),
+            "socials": socials,
+            "website": websites[0] if websites else "",
         }
     except Exception:
         return None
