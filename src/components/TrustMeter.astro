@@ -18,7 +18,7 @@ const color =
   score >= 31 ? "#ccaa22" :
   "#dd4444";
 
-const rotation = -90 + (score / 100) * 180;
+const pct = score / 100;
 
 const excellent = [
   "Excellent — {name} shows strong security, high liquidity, and healthy holder distribution. Low risk.",
@@ -49,18 +49,91 @@ const pool =
 
 const rand = Math.floor(Math.random() * pool.length);
 const summary = pool[rand].replace(/\{name\}/g, name);
+
+const cx = 120;
+const cy = 115;
+const r = 92;
+const circ = Math.PI * r;
+const arcLen = circ * 0.55;
+const offset = arcLen * (1 - pct);
+const needleAngle = -90 + pct * 180;
+
+const ticks: { deg: number; label: string }[] = [
+  { deg: 0, label: "0" },
+  { deg: 25, label: "25" },
+  { deg: 50, label: "50" },
+  { deg: 75, label: "75" },
+  { deg: 100, label: "100" },
+];
 ---
 
 <div class="trust-meter">
-  <h3>Trust Score</h3>
-  <div class="gauge">
-    <div class="gauge-bg"></div>
-    <div class="gauge-fill" style={`--rotation: ${rotation}deg; --color: ${color};`}></div>
-    <div class="gauge-center">
-      <span class="score-value">{score}</span>
-      <span class="score-label">/ 100</span>
-    </div>
-  </div>
+  <svg class="gauge-svg" viewBox="0 0 240 140" fill="none"
+    style={`--arc-len: ${arcLen}; --arc-offset: ${offset}; --needle-angle: ${needleAngle}; --cx: ${cx}; --cy: ${cy}; --color: ${color};`}>
+    <defs>
+      <linearGradient id="trackGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1e1e2a" />
+        <stop offset="100%" stop-color="#15151e" />
+      </linearGradient>
+      <filter id="needleShadow">
+        <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.5" />
+      </filter>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="4" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+
+    <path d="M 20 115 A 92 92 0 0 1 220 115"
+      stroke="url(#trackGrad)" stroke-width="18" stroke-linecap="round" fill="none" />
+
+    <path d="M 20 115 A 92 92 0 0 1 220 115"
+      stroke="url(#trackGrad)" stroke-width="2" stroke-dasharray="4 6" fill="none" opacity="0.3" />
+
+    <path d="M 28 115 A 92 92 0 0 1 212 115"
+      stroke={color} stroke-width="14" stroke-linecap="round" fill="none"
+      stroke-dasharray={`${arcLen}`} stroke-dashoffset={offset}
+      class="arc-fill" />
+
+    <g class="zone-labels">
+      <text x="34" y="102" font-size="8" fill="#dd4444" opacity="0.6" font-weight="600">RISK</text>
+      <text x="90" y="90" font-size="8" fill="#ccaa22" opacity="0.6" font-weight="600">CAUTION</text>
+      <text x="150" y="90" font-size="8" fill="#44cc66" opacity="0.6" font-weight="600">SAFE</text>
+      <text x="200" y="102" font-size="8" fill="#4488ff" opacity="0.6" font-weight="600">ELITE</text>
+    </g>
+
+    {ticks.map((t) => {
+      const rad = ((t.deg - 180) * Math.PI) / 180;
+      const p = { x: cx + (r + 12) * Math.cos(rad), y: cy + (r + 12) * Math.sin(rad) };
+      const pl = { x: cx + (r + 24) * Math.cos(rad), y: cy + (r + 24) * Math.sin(rad) };
+      return (
+        <>
+          <line x1={p.x} y1={p.y} x2={pl.x} y2={pl.y}
+            stroke="#444" stroke-width="1.5" stroke-linecap="round" />
+          <text x={pl.x} y={pl.y + 4} font-size="8" fill="#666"
+            text-anchor="middle" dominant-baseline="middle">{t.label}</text>
+        </>
+      );
+    })}
+
+    <g class="needle">
+      <circle cx={cx} cy={cy} r="5" fill={color} />
+      <circle cx={cx} cy={cy} r="9" fill="none" stroke={color} stroke-width="1.5" opacity="0.3" />
+      <line x1={cx} y1={cy} x2={cx} y2={cy - r + 20}
+        stroke={color} stroke-width="2.5" stroke-linecap="round" />
+    </g>
+
+    <text x={cx} y={cy - 2} font-size="28" font-weight="700"
+      font-family="system-ui" text-anchor="middle" dominant-baseline="middle"
+      fill={color} filter="url(#glow)"
+      class="score-num">{score}</text>
+    <text x={cx} y={cy + 14} font-size="10" fill="#555"
+      text-anchor="middle" dominant-baseline="middle">/ 100</text>
+  </svg>
+
   <p class="summary">{summary}</p>
   <div class="badges">
     <span class="badge" class:list={{ green: badges.liquidityLocked, red: !badges.liquidityLocked }}>
@@ -79,43 +152,72 @@ const summary = pool[rand].replace(/\{name\}/g, name);
 </div>
 
 <style>
-  .trust-meter { margin-bottom: 2rem; }
-  h3 { font-size: 1rem; color: #aaa; margin-bottom: 1rem; }
-  .gauge {
-    position: relative; width: 200px; height: 100px; overflow: hidden;
-    margin: 0 auto 1.5rem;
-  }
-  .gauge-bg {
-    width: 200px; height: 200px; border-radius: 50%;
-    background: conic-gradient(
-      #dd4444 0deg 54deg,
-      #ccaa22 54deg 126deg,
-      #44cc66 126deg 153deg,
-      #4488ff 153deg 180deg
-    );
-    position: absolute; top: 0;
-  }
-  .gauge-fill {
-    width: 200px; height: 200px; border-radius: 50%;
-    position: absolute; top: 0;
-    background: conic-gradient(var(--color) 0deg var(--rotation), #222 0deg);
-    mask: radial-gradient(circle at 50% 100%, transparent 65px, #000 66px);
-    -webkit-mask: radial-gradient(circle at 50% 100%, transparent 65px, #000 66px);
-  }
-  .gauge-center {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -30%);
+  .trust-meter {
     text-align: center;
+    margin-bottom: 2rem;
   }
-  .score-value { font-size: 2.5rem; font-weight: 700; color: var(--color, #fff); display: block; }
-  .score-label { font-size: 0.75rem; color: #888; }
-  .badges { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
-  .badge {
-    font-size: 0.75rem; padding: 0.3rem 0.7rem; border-radius: 6px;
+  .gauge-svg {
+    width: 260px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
   }
-  .badge.green { background: #1a3a2a; color: #6c6; }
-  .badge.red { background: #3a1a1a; color: #c66; }
+  .arc-fill {
+    animation: fillArc 1.4s ease-out forwards;
+  }
+  @keyframes fillArc {
+    0% { stroke-dashoffset: var(--arc-len); }
+    100% { stroke-dashoffset: var(--arc-offset); }
+  }
+  .needle {
+    animation: sweepNeedle 1.4s ease-out forwards;
+    transform-origin: calc(var(--cx) * 1px) calc(var(--cy) * 1px);
+  }
+  @keyframes sweepNeedle {
+    0% { transform: rotate(-90deg); }
+    100% { transform: rotate(calc(var(--needle-angle) * 1deg)); }
+  }
+  .score-num {
+    animation: fadeIn 0.6s ease-out 0.8s both;
+  }
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: scale(0.6); }
+    100% { opacity: 1; transform: scale(1); }
+  }
   .summary {
-    text-align: center; font-size: 0.85rem; line-height: 1.4;
-    color: #bbb; max-width: 280px; margin: 0 auto 1rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #bbb;
+    max-width: 300px;
+    margin: 0.75rem auto 1.25rem;
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+  .badge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+  }
+  .badge.green {
+    background: rgba(68, 204, 102, 0.12);
+    color: #5d5;
+    border: 1px solid rgba(68, 204, 102, 0.2);
+  }
+  .badge.red {
+    background: rgba(221, 68, 68, 0.12);
+    color: #d55;
+    border: 1px solid rgba(221, 68, 68, 0.2);
+  }
+  .zone-labels {
+    animation: fadeZone 0.6s ease-out 1.2s both;
+  }
+  @keyframes fadeZone {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
   }
 </style>
