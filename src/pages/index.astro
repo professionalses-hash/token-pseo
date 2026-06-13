@@ -7,7 +7,7 @@ const tokens = Object.values(
   import.meta.glob("../../data/tokens.json", { eager: true })
 ).map((m) => m.default).flat();
 
-const tokenList = tokens.slice(0, 50);
+const tokenList = tokens;
 ---
 
 <BaseLayout title="Token PSEO — Security Audits & Trust Scores" description="Live security analysis and trust scores for the latest tokens across Ethereum, BSC, and Solana.">
