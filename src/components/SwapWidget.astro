@@ -1,0 +1,63 @@
+---
+export interface Props {
+  address: string;
+  network: string;
+  name: string;
+  symbol: string;
+}
+
+const { address, network, name, symbol } = Astro.props;
+
+const CHAIN_IDS: Record<string, number> = {
+  ethereum: 1,
+  bsc: 56,
+  solana: 901,
+};
+
+const chainId = CHAIN_IDS[network] || 1;
+const dexscreenerUrl = `https://dexscreener.com/${network}/${address}`;
+
+const AFFILIATE = {
+  oneInch: "0x0000000000000000000000000000000000000000",
+};
+---
+
+<div class="swap-section">
+  <h3>Swap {symbol}</h3>
+  <p class="swap-desc">Trade {name} directly on this page</p>
+  <iframe
+    class="swap-iframe"
+    src={`https://thirdweb.com/bridge/swap-widget?buyChain=${chainId}&buyTokenAddress=${address}&theme=dark`}
+    title="Swap Widget"
+    loading="lazy"
+    height="520px"
+    width="100%"
+    style="border: none; border-radius: 8px; background: #1a1a24;"
+  ></iframe>
+  <div class="swap-links">
+    <a href={dexscreenerUrl} target="_blank" rel="noopener noreferrer" class="swap-link dexscreener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      DexScreener
+    </a>
+    <a href={`https://app.1inch.io/#/${chainId}/unified/swap/ETH/${address}?referral=${AFFILIATE.oneInch}`} target="_blank" rel="noopener noreferrer" class="swap-link oneinch">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      1inch
+    </a>
+  </div>
+</div>
+
+<style>
+  .swap-section { margin-bottom: 2rem; }
+  h3 { font-size: 1rem; color: #aaa; margin-bottom: 0.25rem; }
+  .swap-desc { font-size: 0.8rem; color: #666; margin-bottom: 0.75rem; }
+  .swap-iframe { width: 100%; height: 520px; }
+  .swap-links { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+  .swap-link {
+    flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+    text-decoration: none; transition: opacity 0.2s;
+  }
+  .swap-link:hover { opacity: 0.8; text-decoration: none; }
+  .dexscreener { background: #1a1a24; color: #6c8cff; border: 1px solid #2a2a3a; }
+  .oneinch { background: #1a1a24; color: #6c8cff; border: 1px solid #2a2a3a; }
+</style>

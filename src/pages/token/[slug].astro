@@ -6,6 +6,7 @@ import SecurityPanel from "../../components/SecurityPanel.astro";
 import Tokenomics from "../../components/Tokenomics.astro";
 import MarketAnalytics from "../../components/MarketAnalytics.astro";
 import SocialLinks from "../../components/SocialLinks.astro";
+import SwapWidget from "../../components/SwapWidget.astro";
 
 export function getStaticPaths() {
   return Object.values(
@@ -45,6 +46,7 @@ const canonical = `https://cryptdoctor52.xyz/token/${token.slug}/`;
         <Tokenomics tokenomics={token.tokenomics} />
         <MarketAnalytics market={token.market} address={token.address} network={token.network || token.chain} />
         <SocialLinks socials={token.market.socials} website={token.market.website} />
+        <SwapWidget address={token.address} network={token.network || token.chain} name={token.name} symbol={token.symbol} />
       </div>
     </div>
   </main>
