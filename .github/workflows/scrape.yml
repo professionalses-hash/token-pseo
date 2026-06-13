@@ -27,6 +27,9 @@ jobs:
       - name: Run scraper
         run: python scraper/main.py
 
+      - name: Pull latest to avoid divergence
+        run: git pull --rebase origin main
+
       - name: Commit updated data
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
