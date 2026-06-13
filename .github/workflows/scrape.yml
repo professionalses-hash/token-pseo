@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Pull latest to avoid divergence
+        run: git pull --rebase origin main
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -26,9 +29,6 @@ jobs:
 
       - name: Run scraper
         run: python scraper/main.py
-
-      - name: Pull latest to avoid divergence
-        run: git pull --rebase origin main
 
       - name: Commit updated data
         uses: stefanzweifel/git-auto-commit-action@v5

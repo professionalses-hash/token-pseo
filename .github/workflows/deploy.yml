@@ -32,7 +32,7 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.TOKEN }}
-          command: pages deploy dist/ --project-name=cryptdoctor52
+          command: pages deploy dist/ --project-name=token-pseo
 
       - name: Trigger next scrape cycle
         if: ${{ github.event_name != 'push' && github.event.workflow_run && github.event.workflow_run.event == 'schedule' }}
