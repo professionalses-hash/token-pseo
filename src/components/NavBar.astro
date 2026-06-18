@@ -4,27 +4,28 @@
 <nav class="navbar">
   <div class="nav-inner">
     <a href="/" class="logo">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6c8cff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 6px rgba(0,240,255,0.4))">
         <path d="M12 2L2 7l10 5 10-5-10-5z"/>
         <path d="M2 17l10 5 10-5"/>
         <path d="M2 12l10 5 10-5"/>
       </svg>
-      Token PSEO
+      <span class="logo-text">TOKEN PSEO</span>
     </a>
     <div class="nav-links">
-      <a href="/security">Security Center</a>
-      <a href="/audit">Audit Tools</a>
-      <a href="/rugpool">Rugpool Reports</a>
+      <a href="/security">[ Security ]</a>
+      <a href="/audit">[ Audit ]</a>
+      <a href="/rugpool">[ Rugpool ]</a>
     </div>
   </div>
 </nav>
 
 <style>
   .navbar {
-    background: rgba(12, 12, 18, 0.92);
+    background: rgba(8, 8, 14, 0.95);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(0,240,255,0.08);
+    box-shadow: 0 1px 20px rgba(0,240,255,0.03);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -42,27 +43,36 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     color: #fff;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.04em;
   }
-  .logo:hover { text-decoration: none; opacity: 0.9; }
+  .logo:hover { text-decoration: none; }
+  .logo-text {
+    background: linear-gradient(90deg, #00f0ff, #00c8ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
   .nav-links {
     display: flex;
     gap: 0.25rem;
   }
   .nav-links a {
-    font-size: 0.8rem;
-    color: #888;
-    padding: 0.4rem 0.9rem;
-    border-radius: 6px;
+    font-size: 0.72rem;
+    color: #6a7a8a;
+    padding: 0.35rem 0.7rem;
+    border-radius: 4px;
     transition: all 0.2s;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    border: 1px solid transparent;
   }
   .nav-links a:hover {
-    color: #fff;
-    background: rgba(255,255,255,0.06);
+    color: #00f0ff;
+    background: rgba(0,240,255,0.06);
+    border-color: rgba(0,240,255,0.12);
     text-decoration: none;
   }
 </style>

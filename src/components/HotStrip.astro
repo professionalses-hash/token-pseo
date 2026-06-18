@@ -52,18 +52,19 @@ const dup = [...hot, ...hot];
     padding: 0 0.25rem;
   }
   .hot-label {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    color: #ddd;
+    color: rgba(0,240,255,0.4);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.12em;
   }
   .hot-count {
-    font-size: 0.7rem;
-    color: #555;
-    background: #1a1a24;
-    padding: 0.1rem 0.5rem;
-    border-radius: 4px;
+    font-size: 0.6rem;
+    color: rgba(0,240,255,0.2);
+    background: rgba(0,240,255,0.04);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    border: 1px solid rgba(0,240,255,0.05);
   }
   .hot-track-wrap {
     overflow: hidden;
@@ -87,30 +88,30 @@ const dup = [...hot, ...hot];
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.4rem 0.75rem;
-    background: linear-gradient(135deg, rgba(26,26,36,0.7), rgba(22,22,32,0.8));
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 20px;
+    padding: 0.35rem 0.7rem;
+    background: linear-gradient(135deg, rgba(10,12,20,0.8), rgba(8,10,18,0.9));
+    border: 1px solid rgba(0,240,255,0.05);
+    border-radius: 14px;
     white-space: nowrap;
     transition: all 0.2s;
     flex-shrink: 0;
   }
   .hot-chip:hover {
-    border-color: rgba(108,140,255,0.25);
-    background: rgba(30,30,42,0.9);
+    border-color: rgba(0,240,255,0.15);
+    background: rgba(12,16,28,0.95);
     text-decoration: none;
   }
   .chip-name {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: #fff;
+    color: #c8d8e8;
   }
   .chip-sym {
-    font-size: 0.7rem;
-    color: #666;
+    font-size: 0.65rem;
+    color: #4a5a6a;
   }
   .chip-score {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     margin-left: 0.15rem;

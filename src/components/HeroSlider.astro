@@ -46,7 +46,10 @@ const phrases = [
 <section class="hero-slider">
   <div class="intro">
     <h1 class="intro-title">
-      <span class="static-part">Real&#x2011;Time Token</span>
+      <span class="line-animate">
+        <span class="word-move" style="--dx:-30px;--dy:0">Real&#x2011;Time</span>
+        <span class="word-move" style="--dx:30px;--dy:0">Token</span>
+      </span>
       <span class="rotating-text">
         {phrases.map((p, i) => (
           <span class="word" style={`--i: ${i}; --n: ${phrases.length}`}>{p}</span>
@@ -112,50 +115,74 @@ const phrases = [
 
 <style>
   .hero-slider {
-    padding: 3.5rem 0 2rem;
+    padding: 4rem 0 2rem;
     text-align: center;
+    position: relative;
+  }
+
+  .hero-slider::before {
+    content: '// SYSTEM STATUS: ACTIVE';
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: rgba(0,240,255,0.3);
+    font-weight: 500;
   }
 
   .intro-title {
     font-size: 2.25rem;
     font-weight: 800;
-    color: #fff;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.01em;
     line-height: 1.3;
-    min-height: 3.2rem;
+    min-height: 3.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0.25rem;
   }
 
-  .static-part {
-    background: linear-gradient(
-      90deg,
-      #fff 0%,
-      #fff 30%,
-      #6c8cff 50%,
-      #8c6cff 55%,
-      #fff 70%,
-      #fff 100%
-    );
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: shimmer 4s ease-in-out infinite;
+  .line-animate {
+    display: inline-flex;
+    gap: 0.4rem;
+    overflow: hidden;
   }
 
-  @keyframes shimmer {
-    0% { background-position: 100% 0; }
-    60% { background-position: 0% 0; }
-    100% { background-position: 0% 0; }
+  .word-move {
+    display: inline-block;
+    color: #e8f0ff;
+    text-shadow: 0 0 20px rgba(0,240,255,0.15);
+    opacity: 0;
+    transform: translate(var(--dx), 20px);
+    animation: wordEnter 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: 0.2s;
+  }
+
+  .line-animate .word-move:nth-child(2) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes wordEnter {
+    0% { opacity: 0; transform: translate(var(--dx), 20px); filter: blur(4px); }
+    100% { opacity: 1; transform: translate(0, 0); filter: blur(0); }
   }
 
   .rotating-text {
     position: relative;
     display: inline-block;
-    background: linear-gradient(135deg, #6c8cff, #8c6cff);
+    background: linear-gradient(135deg, #00f0ff, #0088cc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    min-width: 240px;
+    min-width: 220px;
+    text-shadow: 0 0 30px rgba(0,240,255,0.2);
+    opacity: 0;
+    animation: wordEnter 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: 0.6s;
+    transform: translateY(20px);
   }
 
   .word {
@@ -177,15 +204,20 @@ const phrases = [
   }
 
   .intro-sub {
-    margin-top: 1rem;
-    font-size: 1rem;
-    color: #888;
+    margin-top: 1.2rem;
+    font-size: 0.85rem;
+    color: #6a7a8a;
     max-width: 550px;
     margin-left: auto;
     margin-right: auto;
-    line-height: 1.5;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: wordEnter 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: 0.8s;
+    transform: translateY(15px);
   }
-  .intro-sub strong { color: #bbb; }
+  .intro-sub strong { color: #88b8d8; }
 
   .carousel-wrap {
     margin: 2rem auto 0;
@@ -208,32 +240,59 @@ const phrases = [
     100% { transform: translateX(-50%); }
   }
 
+  .slide:nth-child(1) { animation-delay: 0s; }
+  .slide:nth-child(2) { animation-delay: 0.05s; }
+  .slide:nth-child(3) { animation-delay: 0.1s; }
+  .slide:nth-child(4) { animation-delay: 0.15s; }
+  .slide:nth-child(5) { animation-delay: 0.2s; }
+  .slide:nth-child(6) { animation-delay: 0.25s; }
+
   .slide {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    background: linear-gradient(135deg, rgba(26,26,36,0.8), rgba(22,22,32,0.9));
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 14px;
+    padding: 0.65rem 1rem;
+    background: linear-gradient(135deg, rgba(10,12,20,0.9), rgba(8,10,18,0.95));
+    border: 1px solid rgba(0,240,255,0.06);
+    border-radius: 8px;
     min-width: 300px;
     flex-shrink: 0;
-    transition: all 0.25s;
+    transition: all 0.3s;
+    position: relative;
   }
+
+  .slide::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 9px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(0,240,255,0.1), transparent, rgba(0,200,255,0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
   .slide:hover {
-    border-color: rgba(108,140,255,0.3);
-    background: rgba(30,30,42,0.95);
+    border-color: rgba(0,240,255,0.2);
+    background: rgba(12,16,28,0.95);
     transform: translateY(-2px);
     text-decoration: none;
   }
 
+  .slide:hover::before {
+    background: linear-gradient(135deg, rgba(0,240,255,0.25), transparent, rgba(0,200,255,0.1));
+  }
+
   .slide-rank {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #555;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(0,240,255,0.35);
     width: 1.6rem;
     text-align: center;
     flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
   }
 
   .slide-body {
@@ -249,17 +308,17 @@ const phrases = [
   }
 
   .slide-name {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    color: #fff;
+    color: #d0dce8;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .slide-sym {
-    font-size: 0.7rem;
-    color: #666;
+    font-size: 0.65rem;
+    color: #4a5a6a;
     white-space: nowrap;
   }
 
@@ -271,39 +330,42 @@ const phrases = [
   }
 
   .slide-network {
-    font-size: 0.65rem;
-    background: rgba(255,255,255,0.06);
-    color: #888;
-    padding: 0.05rem 0.45rem;
-    border-radius: 3px;
+    font-size: 0.6rem;
+    background: rgba(0,240,255,0.06);
+    color: rgba(0,240,255,0.5);
+    padding: 0.05rem 0.4rem;
+    border-radius: 2px;
     text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
   .slide-price {
-    font-size: 0.7rem;
-    color: #777;
+    font-size: 0.65rem;
+    color: #5a6a7a;
     font-variant-numeric: tabular-nums;
   }
 
   .slide-bar {
-    height: 3px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 2px;
+    height: 2px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 1px;
     margin-top: 0.4rem;
     overflow: hidden;
   }
 
   .slide-bar-fill {
     height: 100%;
-    border-radius: 2px;
+    border-radius: 1px;
     transition: width 0.6s ease;
+    box-shadow: 0 0 6px currentColor;
   }
 
   .slide-score {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     flex-shrink: 0;
+    opacity: 0.9;
   }
 
   .hero-stats {
@@ -311,33 +373,51 @@ const phrases = [
     justify-content: center;
     gap: 2.5rem;
     margin-top: 2rem;
+    opacity: 0;
+    animation: wordEnter 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: 1s;
+    transform: translateY(15px);
   }
 
   .hero-stat {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+  }
+
+  .hero-stat::after {
+    content: '';
+    position: absolute;
+    bottom: -0.4rem;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,240,255,0.15), transparent);
   }
 
   .hero-num {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #fff;
+    color: #e0ecf8;
     font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 20px rgba(0,240,255,0.1);
   }
 
   .hero-label {
-    font-size: 0.75rem;
-    color: #666;
+    font-size: 0.65rem;
+    color: #4a5a6a;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
     margin-top: 0.15rem;
+    font-weight: 500;
   }
 
   @media (max-width: 600px) {
-    .intro-title { font-size: 1.6rem; }
-    .hero-slider { padding: 2rem 0 1.5rem; }
+    .intro-title { font-size: 1.3rem; }
+    .hero-slider { padding: 2.5rem 0 1.5rem; }
+    .hero-slider::before { display: none; }
     .hero-stats { gap: 1.5rem; }
-    .slide { min-width: 240px; padding: 0.6rem 0.75rem; }
+    .slide { min-width: 230px; padding: 0.5rem 0.65rem; }
   }
 </style>
