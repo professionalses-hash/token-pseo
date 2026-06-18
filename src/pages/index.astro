@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import TokenCard from "../components/TokenCard.astro";
 import HotStrip from "../components/HotStrip.astro";
+import HeroSlider from "../components/HeroSlider.astro";
 
 const tokens = Object.values(
   import.meta.glob("../../data/tokens.json", { eager: true })
@@ -11,24 +12,7 @@ const tokenList = tokens;
 ---
 
 <BaseLayout title="Token PSEO — Security Audits & Trust Scores" description="Live security analysis and trust scores for the latest tokens across Ethereum, BSC, and Solana.">
-  <section class="hero">
-    <h1>Token Security <span class="hl">Audits</span></h1>
-    <p class="sub">Real-time trust scores, security analysis & scam detection for <strong>{tokenList.length}+</strong> tokens across Ethereum, BSC & Solana.</p>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <span class="hero-num">{tokenList.length}</span>
-        <span class="hero-label">Tokens Tracked</span>
-      </div>
-      <div class="hero-stat">
-        <span class="hero-num">{tokenList.filter(t => t.trustScore >= 70).length}</span>
-        <span class="hero-label">Safe Tokens</span>
-      </div>
-      <div class="hero-stat">
-        <span class="hero-num">{tokenList.filter(t => t.trustScore < 31).length}</span>
-        <span class="hero-label">High Risk</span>
-      </div>
-    </div>
-  </section>
+  <HeroSlider tokens={tokenList} />
 
   <HotStrip tokens={tokenList} />
 
@@ -56,57 +40,6 @@ const tokenList = tokens;
 </BaseLayout>
 
 <style>
-  .hero {
-    text-align: center;
-    padding: 3rem 0 2.5rem;
-  }
-  h1 {
-    font-size: 2.25rem;
-    font-weight: 800;
-    color: #fff;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-  }
-  .hl {
-    background: linear-gradient(135deg, #6c8cff, #8c6cff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .sub {
-    margin-top: 0.75rem;
-    font-size: 1rem;
-    color: #888;
-    max-width: 550px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.5;
-  }
-  .sub strong { color: #bbb; }
-  .hero-stats {
-    display: flex;
-    justify-content: center;
-    gap: 2.5rem;
-    margin-top: 2rem;
-  }
-  .hero-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .hero-num {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #fff;
-    font-variant-numeric: tabular-nums;
-  }
-  .hero-label {
-    font-size: 0.75rem;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-top: 0.15rem;
-  }
   .list-header {
     display: flex;
     align-items: baseline;
@@ -135,7 +68,5 @@ const tokenList = tokens;
   }
   @media (max-width: 600px) {
     h1 { font-size: 1.75rem; }
-    .hero { padding: 2rem 0 1.5rem; }
-    .hero-stats { gap: 1.5rem; }
   }
 </style>
