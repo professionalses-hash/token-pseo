@@ -62,7 +62,6 @@ const { title, description, canonical } = Astro.props;
         z-index: 0;
         pointer-events: none;
         overflow: hidden;
-        perspective: 1000px;
       }
 
       .wireframe-grid {
@@ -72,8 +71,8 @@ const { title, description, canonical } = Astro.props;
         bottom: -20%;
         top: -50%;
         background-image:
-          linear-gradient(rgba(0,240,255,0.025) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0,240,255,0.025) 1px, transparent 1px);
+          linear-gradient(rgba(0,240,255,0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,240,255,0.02) 1px, transparent 1px);
         background-size: 64px 64px;
         transform: rotateX(72deg);
         transform-origin: center bottom;
@@ -85,55 +84,67 @@ const { title, description, canonical } = Astro.props;
         100% { transform: rotateX(72deg) translateY(64px); }
       }
 
-      .wireframe-nodes {
+      .wireframe-svg {
         position: absolute;
-        left: 0; right: 0; top: 0; bottom: 0;
-        background-image:
-          radial-gradient(1.5px 1.5px at 10% 12%, rgba(0,240,255,0.25) 50%, transparent 50%),
-          radial-gradient(1.5px 1.5px at 25% 55%, rgba(0,240,255,0.15) 50%, transparent 50%),
-          radial-gradient(1.5px 1.5px at 40% 22%, rgba(0,240,255,0.2) 50%, transparent 50%),
-          radial-gradient(1.5px 1.5px at 55% 70%, rgba(0,240,255,0.15) 50%, transparent 50%),
-          radial-gradient(1.5px 1.5px at 70% 15%, rgba(0,240,255,0.2) 50%, transparent 50%),
-          radial-gradient(1.5px 1.5px at 85% 45%, rgba(0,240,255,0.18) 50%, transparent 50%),
-          radial-gradient(1.5px 1.5px at 15% 80%, rgba(0,240,255,0.12) 50%, transparent 50%),
-          radial-gradient(1.5px 1.5px at 65% 90%, rgba(0,240,255,0.15) 50%, transparent 50%),
-          radial-gradient(2px 2px at 35% 40%, rgba(0,240,255,0.35) 50%, transparent 50%),
-          radial-gradient(2px 2px at 78% 62%, rgba(0,240,255,0.3) 50%, transparent 50%),
-          radial-gradient(1.5px 1.5px at 5% 35%, rgba(0,240,255,0.1) 50%, transparent 50%),
-          radial-gradient(1.5px 1.5px at 92% 8%, rgba(0,240,255,0.12) 50%, transparent 50%),
-          radial-gradient(1.5px 1.5px at 48% 88%, rgba(0,240,255,0.18) 50%, transparent 50%),
-          radial-gradient(2px 2px at 60% 35%, rgba(0,240,255,0.25) 50%, transparent 50%),
-          radial-gradient(1.5px 1.5px at 20% 95%, rgba(0,240,255,0.1) 50%, transparent 50%);
-        animation: nodePulse 5s ease-in-out infinite alternate;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
       }
 
-      @keyframes nodePulse {
-        0% { opacity: 0.6; }
+      .wireframe-svg path {
+        fill: none;
+        stroke: rgba(0,240,255,0.08);
+        stroke-width: 1;
+      }
+
+      .wireframe-svg .wire-pulse {
+        stroke: rgba(0,240,255,0.18);
+        stroke-width: 1.5;
+        stroke-dasharray: 6 40;
+        animation: dataFlow 4s linear infinite;
+      }
+
+      .wireframe-svg .wire-pulse:nth-child(2) { animation-delay: 1s; }
+      .wireframe-svg .wire-pulse:nth-child(3) { animation-delay: 2s; }
+      .wireframe-svg .wire-pulse:nth-child(4) { animation-delay: 3s; }
+
+      @keyframes dataFlow {
+        0% { stroke-dashoffset: 0; opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { stroke-dashoffset: -100; opacity: 0; }
+      }
+
+      .wireframe-svg .wire-glow {
+        stroke: rgba(0,240,255,0.04);
+        stroke-width: 3;
+        filter: blur(3px);
+        animation: glowPulse 6s ease-in-out infinite alternate;
+      }
+
+      @keyframes glowPulse {
+        0% { opacity: 0.3; }
         100% { opacity: 1; }
       }
 
-      .wireframe-beam {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 1px;
-        background: linear-gradient(90deg, transparent 0%, rgba(0,240,255,0.06) 50%, transparent 100%);
-        animation: beamSweep 8s linear infinite;
-        filter: blur(2px);
+      .wireframe-svg circle {
+        fill: rgba(0,240,255,0.06);
+        stroke: rgba(0,240,255,0.1);
+        stroke-width: 0.5;
       }
 
-      @keyframes beamSweep {
-        0% { transform: translateY(-10vh); opacity: 0; }
-        5% { opacity: 1; }
-        95% { opacity: 1; }
-        100% { transform: translateY(110vh); opacity: 0; }
+      .wireframe-svg .node-core {
+        fill: rgba(0,240,255,0.3);
+        stroke: none;
+        animation: nodeCore 4s ease-in-out infinite alternate;
       }
 
-      .wireframe-beam:nth-child(3) {
-        animation-delay: 4s;
-        background: linear-gradient(90deg, transparent 0%, rgba(0,240,255,0.04) 50%, transparent 100%);
-        height: 2px;
+      .wireframe-svg .node-core:nth-child(even) { animation-delay: 2s; }
+
+      @keyframes nodeCore {
+        0% { opacity: 0.2; r: 1.5; }
+        100% { opacity: 0.8; r: 2.5; }
       }
 
       .container {
@@ -155,9 +166,63 @@ const { title, description, canonical } = Astro.props;
   <body>
     <div class="wireframe" aria-hidden="true">
       <div class="wireframe-grid"></div>
-      <div class="wireframe-nodes"></div>
-      <div class="wireframe-beam"></div>
-      <div class="wireframe-beam"></div>
+      <svg class="wireframe-svg" viewBox="0 0 1000 800" preserveAspectRatio="none">
+        <defs>
+          <filter id="wgBlur"><feGaussianBlur stdDeviation="1.5"/></filter>
+        </defs>
+        <g filter="url(#wgBlur)">
+          <path d="M50,100 L150,320 L300,144 L450,440 L600,220 L750,380 L880,120" class="wire-glow"/>
+          <path d="M50,100 L150,320 L300,144 L450,440 L600,220 L750,380 L880,120" class="wire-pulse"/>
+          <path d="M50,100 L150,320 L300,144 L450,440 L600,220 L750,380 L880,120" class="wire-pulse"/>
+        </g>
+        <g filter="url(#wgBlur)">
+          <path d="M100,60 L250,150 L420,80 L550,180 L700,100 L920,50" class="wire-glow"/>
+          <path d="M100,60 L250,150 L420,80 L550,180 L700,100 L920,50" class="wire-pulse"/>
+          <path d="M100,60 L250,150 L420,80 L550,180 L700,100 L920,50" class="wire-pulse"/>
+        </g>
+        <g filter="url(#wgBlur)">
+          <path d="M100,60 L50,100 M250,150 L150,320 M420,80 L300,144 M550,180 L600,220 M700,100 L750,380 M920,50 L880,120" class="wire-glow"/>
+          <path d="M100,60 L50,100 M250,150 L150,320 M420,80 L300,144 M550,180 L600,220 M700,100 L750,380 M920,50 L880,120" class="wire-pulse"/>
+        </g>
+        <g filter="url(#wgBlur)">
+          <path d="M150,320 L100,480 L50,100 M300,144 L450,440 L600,220 M750,380 L820,700 L880,120 M450,440 L350,600 L200,700 L100,480 M600,220 L700,720 L820,700 M150,320 L350,600 M300,144 L200,700" class="wire-glow"/>
+          <path d="M150,320 L100,480 L50,100 M300,144 L450,440 L600,220 M750,380 L820,700 L880,120 M450,440 L350,600 L200,700 L100,480 M600,220 L700,720 L820,700 M150,320 L350,600 M300,144 L200,700" class="wire-pulse"/>
+          <path d="M150,320 L100,480 L50,100 M300,144 L450,440 L600,220 M750,380 L820,700 L880,120 M450,440 L350,600 L200,700 L100,480 M600,220 L700,720 L820,700 M150,320 L350,600 M300,144 L200,700" class="wire-pulse"/>
+        </g>
+        <g filter="url(#wgBlur)">
+          <path d="M150,320 L250,150 M300,144 L420,80 M600,220 L550,180 M750,380 L700,100 M880,120 L920,50 M820,700 L920,50 M700,720 L920,50" class="wire-glow"/>
+          <path d="M150,320 L250,150 M300,144 L420,80 M600,220 L550,180 M750,380 L700,100 M880,120 L920,50 M820,700 L920,50 M700,720 L920,50" class="wire-pulse"/>
+        </g>
+        <g filter="url(#wgBlur)">
+          <path d="M100,60 L300,144 L450,440 L600,220 L750,380 L880,120" class="wire-glow"/>
+          <path d="M100,60 L300,144 L450,440 L600,220 L750,380 L880,120" class="wire-pulse"/>
+        </g>
+        <circle cx="50" cy="100" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
+        <circle cx="150" cy="320" r="7" fill="rgba(0,240,255,0.05)" stroke="rgba(0,240,255,0.1)"/>
+        <circle cx="300" cy="144" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
+        <circle cx="450" cy="440" r="8" fill="rgba(0,240,255,0.06)" stroke="rgba(0,240,255,0.12)"/>
+        <circle cx="600" cy="220" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
+        <circle cx="750" cy="380" r="7" fill="rgba(0,240,255,0.05)" stroke="rgba(0,240,255,0.1)"/>
+        <circle cx="880" cy="120" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
+        <circle cx="100" cy="60" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
+        <circle cx="250" cy="150" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
+        <circle cx="420" cy="80" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
+        <circle cx="550" cy="180" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
+        <circle cx="700" cy="100" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
+        <circle cx="920" cy="50" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
+        <circle cx="100" cy="480" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
+        <circle cx="350" cy="600" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
+        <circle cx="200" cy="700" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
+        <circle cx="820" cy="700" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
+        <circle cx="700" cy="720" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
+        <circle cx="450" cy="440" r="2.5" class="node-core"/>
+        <circle cx="150" cy="320" r="2" class="node-core"/>
+        <circle cx="750" cy="380" r="2" class="node-core"/>
+        <circle cx="300" cy="144" r="1.5" class="node-core"/>
+        <circle cx="600" cy="220" r="1.5" class="node-core"/>
+        <circle cx="350" cy="600" r="2" class="node-core"/>
+        <circle cx="820" cy="700" r="2" class="node-core"/>
+      </svg>
     </div>
     <NavBar />
     <div class="container">
