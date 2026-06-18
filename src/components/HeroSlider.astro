@@ -47,8 +47,8 @@ const phrases = [
   <div class="intro">
     <h1 class="intro-title">
       <span class="line-animate">
-        <span class="word-move" style="--dx:-120px">Real&#x2011;Time</span>
-        <span class="word-move" style="--dx:120px">Token</span>
+        <span class="word-move" style="--dx:-600px">Real&#x2011;Time</span>
+        <span class="word-move" style="--dx:600px">Token</span>
       </span>
       <span class="rotating-text">
         {phrases.map((p, i) => (
@@ -57,8 +57,8 @@ const phrases = [
       </span>
     </h1>
     <p class="intro-sub">
-      <span class="sub-line" style="--dx:-80px">Live security analysis, trust scores &amp; scam detection for</span>
-      <span class="sub-line" style="--dx:80px"><strong>{tokens.length}+</strong> tokens across Ethereum, BSC &amp; Solana.</span>
+      <span class="sub-line" style="--dx:-500px">Live security analysis, trust scores &amp; scam detection for</span>
+      <span class="sub-line" style="--dx:500px"><strong>{tokens.length}+</strong> tokens across Ethereum, BSC &amp; Solana.</span>
     </p>
   </div>
 
@@ -142,31 +142,31 @@ const phrases = [
     display: inline-block;
     opacity: 0;
     transform: translate(var(--dx), 0);
-    animation: slideColor 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.2s;
+    animation: slideColor 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.3s;
   }
 
   .line-animate .word-move:nth-child(2) {
-    animation-delay: 0.45s;
+    animation-delay: 0.6s;
   }
 
   @keyframes slideColor {
     0% {
       opacity: 0;
       transform: translate(var(--dx), 0);
-      filter: blur(6px);
-      color: #004466;
+      filter: blur(8px);
+      color: #003355;
     }
-    40% {
+    45% {
       opacity: 1;
       transform: translate(0, 0);
       filter: blur(0);
       color: #00f0ff;
-      text-shadow: 0 0 30px rgba(0,240,255,0.4);
+      text-shadow: 0 0 40px rgba(0,240,255,0.5);
     }
-    70% {
+    75% {
       color: #88ddff;
-      text-shadow: 0 0 20px rgba(0,200,255,0.2);
+      text-shadow: 0 0 25px rgba(0,200,255,0.2);
     }
     100% {
       opacity: 1;
@@ -187,12 +187,12 @@ const phrases = [
     background-clip: text;
     opacity: 0;
     transform: translateY(20px);
-    animation: fadeGlow 0.7s ease forwards;
-    animation-delay: 0.7s;
+    animation: fadeGlow 0.8s ease forwards;
+    animation-delay: 1s;
   }
 
   @keyframes fadeGlow {
-    0% { opacity: 0; transform: translateY(20px); filter: blur(3px); }
+    0% { opacity: 0; transform: translateY(15px); filter: blur(3px); }
     100% { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
 
@@ -230,10 +230,10 @@ const phrases = [
     color: #6a7a8a;
     opacity: 0;
     transform: translate(var(--dx), 0);
-    animation: slideColor 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: slideColor 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
-  .sub-line:first-child { animation-delay: 1s; }
-  .sub-line:last-child { animation-delay: 1.2s; }
+  .sub-line:first-child { animation-delay: 1.2s; }
+  .sub-line:last-child { animation-delay: 1.5s; }
 
   .carousel-wrap {
     margin: 2rem auto 0;
@@ -383,8 +383,8 @@ const phrases = [
     gap: 2.5rem;
     margin-top: 2rem;
     opacity: 0;
-    animation: fadeGlow 0.7s ease forwards;
-    animation-delay: 1.5s;
+    animation: fadeGlow 0.8s ease forwards;
+    animation-delay: 2s;
     transform: translateY(15px);
   }
 
