@@ -1,0 +1,242 @@
+---
+interface Token {
+  trustScore: number;
+  badges?: {
+    liquidityLocked?: boolean;
+    mintRenounced?: boolean;
+    honeypot?: boolean;
+    highConcentration?: boolean;
+  };
+  market?: {
+    liquidityUsd?: number;
+  };
+}
+
+interface Props {
+  tokens: Token[];
+}
+
+const { tokens } = Astro.props;
+
+const total = tokens.length;
+const safe = tokens.filter((t) => t.trustScore >= 70).length;
+const risky = tokens.filter((t) => t.trustScore < 31).length;
+const mid = total - safe - risky;
+const avgScore = Math.round(tokens.reduce((s, t) => s + t.trustScore, 0) / total);
+const liqLocked = tokens.filter((t) => t.badges?.liquidityLocked).length;
+const mintRenounced = tokens.filter((t) => t.badges?.mintRenounced).length;
+const honeypots = tokens.filter((t) => t.badges?.honeypot).length;
+
+const cards = [
+  { label: "Average Trust Score", value: avgScore, unit: "/100", color: "#00f0ff", icon: "A" },
+  { label: "Tokens Audited", value: total, unit: "", color: "#44cc66", icon: "T" },
+  { label: "Safe Tokens", value: safe, unit: `/${total}`, color: "#00c8ff", icon: "S" },
+  { label: "Liquidity Locked", value: liqLocked, unit: "tokens", color: "#44cc66", icon: "L" },
+  { label: "Mint Renounced", value: mintRenounced, unit: "tokens", color: "#88ddff", icon: "M" },
+  { label: "Honeypots Detected", value: honeypots, unit: "alerts", color: "#ff4455", icon: "!" },
+];
+
+const scoreDist = [
+  { label: "Safe (70-100)", count: safe, color: "#44cc66" },
+  { label: "Caution (31-69)", count: mid, color: "#ccaa22" },
+  { label: "Risk (0-30)", count: risky, color: "#dd4444" },
+];
+---
+
+<section class="sec-dashboard">
+  <h2 class="sec-title">Security Overview</h2>
+  <div class="dash-grid">
+    {cards.map((c, i) => (
+      <div class="dash-card" style={`--i:${i}`}>
+        <div class="dash-icon" style={`color:${c.color}`}>{c.icon}</div>
+        <div class="dash-body">
+          <span class="dash-value">{c.value}<span class="dash-unit">{c.unit}</span></span>
+          <span class="dash-label">{c.label}</span>
+        </div>
+        <div class="dash-glow" style={`background:${c.color}`}></div>
+      </div>
+    ))}
+  </div>
+
+  <div class="dist-bar-wrap">
+    {scoreDist.map((d) => (
+      <div class="dist-row">
+        <span class="dist-label">{d.label}</span>
+        <div class="dist-track">
+          <div class="dist-fill" style={`width:${(d.count / total) * 100}%;background:${d.color}`}></div>
+        </div>
+        <span class="dist-count">{d.count}</span>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .sec-dashboard {
+    padding: 2rem 0 1rem;
+    position: relative;
+  }
+
+  .sec-dashboard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,240,255,0.08), transparent);
+  }
+
+  .sec-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(0,240,255,0.6);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .sec-title::before { content: '// '; color: rgba(0,240,255,0.25); }
+  .sec-title::after { content: ' //'; color: rgba(0,240,255,0.25); }
+
+  .dash-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .dash-card {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.8rem 0.9rem;
+    background: linear-gradient(135deg, rgba(10,12,20,0.8), rgba(8,10,18,0.9));
+    border: 1px solid rgba(0,240,255,0.05);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: dashIn 0.5s ease forwards;
+    animation-delay: calc(var(--i) * 0.08s);
+    transition: all 0.25s;
+  }
+
+  .dash-card:hover {
+    border-color: rgba(0,240,255,0.12);
+    background: rgba(12,16,28,0.95);
+    transform: translateY(-1px);
+  }
+
+  @keyframes dashIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dash-icon {
+    font-size: 1rem;
+    font-weight: 800;
+    width: 1.8rem;
+    height: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.04);
+    flex-shrink: 0;
+    font-family: monospace;
+  }
+
+  .dash-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .dash-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #e0ecf8;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+
+  .dash-unit {
+    font-size: 0.65rem;
+    color: #4a5a6a;
+    font-weight: 400;
+    margin-left: 0.2rem;
+  }
+
+  .dash-label {
+    font-size: 0.6rem;
+    color: #4a5a6a;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .dash-glow {
+    position: absolute;
+    right: -0.5rem;
+    top: -0.5rem;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    opacity: 0.04;
+    filter: blur(12px);
+    pointer-events: none;
+  }
+
+  .dist-bar-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    max-width: 450px;
+    margin: 1.25rem auto 0;
+    opacity: 0;
+    animation: dashIn 0.5s ease forwards;
+    animation-delay: 0.6s;
+  }
+
+  .dist-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .dist-label {
+    font-size: 0.65rem;
+    color: #4a5a6a;
+    min-width: 7rem;
+    letter-spacing: 0.03em;
+  }
+
+  .dist-track {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .dist-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.8s ease;
+    box-shadow: 0 0 6px currentColor;
+  }
+
+  .dist-count {
+    font-size: 0.65rem;
+    color: #5a6a7a;
+    font-variant-numeric: tabular-nums;
+    min-width: 1.8rem;
+    text-align: right;
+  }
+
+  @media (max-width: 700px) {
+    .dash-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

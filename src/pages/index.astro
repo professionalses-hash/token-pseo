@@ -4,6 +4,9 @@ import HotStrip from "../components/HotStrip.astro";
 import HeroSlider from "../components/HeroSlider.astro";
 import Features from "../components/Features.astro";
 import LatestTokens from "../components/LatestTokens.astro";
+import SecurityDashboard from "../components/SecurityDashboard.astro";
+import ChainExplorer from "../components/ChainExplorer.astro";
+import MarketPulse from "../components/MarketPulse.astro";
 
 const tokens = Object.values(
   import.meta.glob("../../data/tokens.json", { eager: true })
@@ -20,4 +23,10 @@ const tokenList = tokens;
   <Features />
 
   <LatestTokens tokens={tokenList} />
+
+  <SecurityDashboard tokens={tokenList} />
+
+  <ChainExplorer tokens={tokenList} />
+
+  <MarketPulse tokens={tokenList} />
 </BaseLayout>

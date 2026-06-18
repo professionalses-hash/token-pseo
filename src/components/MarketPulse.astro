@@ -1,0 +1,225 @@
+---
+interface Token {
+  name: string;
+  symbol: string;
+  trustScore: number;
+  slug: string;
+  network?: string;
+  chain?: string;
+  market?: {
+    priceUsd?: number;
+    marketCap?: number;
+    volume24h?: number;
+    liquidityUsd?: number;
+  };
+}
+
+interface Props {
+  tokens: Token[];
+}
+
+const { tokens } = Astro.props;
+
+const withMarket = tokens.filter((t) => t.market);
+const totalVol = withMarket.reduce((s, t) => s + (t.market?.volume24h ?? 0), 0);
+const totalLiq = withMarket.reduce((s, t) => s + (t.market?.liquidityUsd ?? 0), 0);
+const totalMc = withMarket.reduce((s, t) => s + (t.market?.marketCap ?? 0), 0);
+
+const bestScore = [...tokens].sort((a, b) => b.trustScore - a.trustScore)[0];
+const mostVol = [...withMarket].sort((a, b) => (b.market?.volume24h ?? 0) - (a.market?.volume24h ?? 0))[0];
+
+const stats = [
+  { label: "24h Volume", value: totalVol, format: "usd" },
+  { label: "Total Liquidity", value: totalLiq, format: "usd" },
+  { label: "Market Cap", value: totalMc, format: "usd" },
+];
+
+function fmtUsd(n: number): string {
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
+  if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
+  return `$${n.toFixed(0)}`;
+}
+
+function fmtPrice(n?: number): string {
+  if (n == null) return "-";
+  if (n < 0.0001) return `$${n.toExponential(2)}`;
+  if (n < 1) return `$${n.toFixed(6)}`;
+  return `$${n.toFixed(4)}`;
+}
+---
+
+<section class="sec-pulse">
+  <h2 class="sec-title">Market Pulse</h2>
+  <div class="pulse-grid">
+    <div class="pulse-metrics">
+      {stats.map((s, i) => (
+        <div class="pulse-card" style={`--i:${i}`}>
+          <span class="pulse-val">{fmtUsd(s.value)}</span>
+          <span class="pulse-label">{s.label}</span>
+        </div>
+      ))}
+    </div>
+    <div class="pulse-leaders">
+      {bestScore && (
+        <a href={`/token/${bestScore.slug}`} class="pulse-leader" style="--i:3">
+          <span class="pl-tag" style="color:#00f0ff">Top Trust</span>
+          <span class="pl-name">{bestScore.name}</span>
+          <span class="pl-score" style="color:#44cc66">{bestScore.trustScore}</span>
+        </a>
+      )}
+      {mostVol && (
+        <a href={`/token/${mostVol.slug}`} class="pulse-leader" style="--i:4">
+          <span class="pl-tag" style="color:#ccaa22">Most Traded</span>
+          <span class="pl-name">{mostVol.name}</span>
+          <span class="pl-score" style="color:#ccaa22">{fmtPrice(mostVol.market?.priceUsd)}</span>
+        </a>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .sec-pulse {
+    padding: 2rem 0 1rem;
+    position: relative;
+  }
+
+  .sec-pulse::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,240,255,0.08), transparent);
+  }
+
+  .sec-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(0,240,255,0.6);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .sec-title::before { content: '// '; color: rgba(0,240,255,0.25); }
+  .sec-title::after { content: ' //'; color: rgba(0,240,255,0.25); }
+
+  .pulse-grid {
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .pulse-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .pulse-card {
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(10,12,20,0.8), rgba(8,10,18,0.9));
+    border: 1px solid rgba(0,240,255,0.05);
+    border-radius: 8px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: pulseIn 0.45s ease forwards;
+    animation-delay: calc(var(--i) * 0.1s);
+    transition: all 0.25s;
+  }
+
+  .pulse-card:hover {
+    border-color: rgba(0,240,255,0.12);
+    background: rgba(12,16,28,0.95);
+    transform: translateY(-1px);
+  }
+
+  @keyframes pulseIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .pulse-val {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #e0ecf8;
+    display: block;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pulse-label {
+    font-size: 0.6rem;
+    color: #4a5a6a;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 0.2rem;
+    display: block;
+  }
+
+  .pulse-leaders {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .pulse-leader {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 0.9rem;
+    background: linear-gradient(135deg, rgba(10,12,20,0.8), rgba(8,10,18,0.9));
+    border: 1px solid rgba(0,240,255,0.05);
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: pulseIn 0.45s ease forwards;
+    animation-delay: calc(var(--i) * 0.1s);
+    transition: all 0.25s;
+  }
+
+  .pulse-leader:hover {
+    border-color: rgba(0,240,255,0.12);
+    background: rgba(12,16,28,0.95);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+
+  .pl-tag {
+    font-size: 0.55rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.04);
+    flex-shrink: 0;
+  }
+
+  .pl-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #c8d8e8;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pl-score {
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    .pulse-metrics { grid-template-columns: 1fr; }
+    .pulse-leaders { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,223 @@
+---
+interface Token {
+  trustScore: number;
+  network?: string;
+  chain?: string;
+  market?: {
+    volume24h?: number;
+    liquidityUsd?: number;
+  };
+}
+
+interface Props {
+  tokens: Token[];
+}
+
+const { tokens } = Astro.props;
+
+const chains = new Map<string, { count: number; totalScore: number; totalVol: number; totalLiq: number }>();
+
+for (const t of tokens) {
+  const c = (t.network || t.chain || "unknown").toLowerCase();
+  const entry = chains.get(c) || { count: 0, totalScore: 0, totalVol: 0, totalLiq: 0 };
+  entry.count++;
+  entry.totalScore += t.trustScore;
+  entry.totalVol += t.market?.volume24h ?? 0;
+  entry.totalLiq += t.market?.liquidityUsd ?? 0;
+  chains.set(c, entry);
+}
+
+const chainData = Array.from(chains.entries())
+  .map(([name, d]) => ({
+    name,
+    count: d.count,
+    avgScore: Math.round(d.totalScore / d.count),
+    volume: d.totalVol,
+    liquidity: d.totalLiq,
+  }))
+  .sort((a, b) => b.count - a.count);
+
+const colors = ["#00f0ff", "#44cc66", "#ccaa22", "#ff4455", "#8888ff"];
+const totalTokens = tokens.length;
+---
+
+<section class="sec-chains">
+  <h2 class="sec-title">Chain Distribution</h2>
+  <div class="chain-grid">
+    {chainData.map((ch, i) => {
+      const pct = (ch.count / totalTokens) * 100;
+      const color = colors[i % colors.length];
+      return (
+        <div class="chain-card" style={`--i:${i}`}>
+          <div class="chain-head">
+            <span class="chain-name">{ch.name}</span>
+            <span class="chain-badge" style={`color:${color};border-color:${color}20`}>{ch.count} tokens</span>
+          </div>
+          <div class="chain-bar-wrap">
+            <div class="chain-bar">
+              <div class="chain-bar-fill" style={`width:${pct}%;background:${color}`}></div>
+            </div>
+            <span class="chain-pct">{pct.toFixed(0)}%</span>
+          </div>
+          <div class="chain-stats">
+            <div class="chain-stat">
+              <span class="cs-val">{ch.avgScore}</span>
+              <span class="cs-lbl">Avg Score</span>
+            </div>
+            <div class="chain-stat">
+              <span class="cs-val" style={`color:${color}`}>
+                {ch.volume >= 1e6 ? `${(ch.volume / 1e6).toFixed(1)}M` : ch.volume >= 1e3 ? `${(ch.volume / 1e3).toFixed(1)}K` : ch.volume.toFixed(0)}
+              </span>
+              <span class="cs-lbl">Volume</span>
+            </div>
+            <div class="chain-stat">
+              <span class="cs-val">
+                {ch.liquidity >= 1e6 ? `${(ch.liquidity / 1e6).toFixed(1)}M` : ch.liquidity >= 1e3 ? `${(ch.liquidity / 1e3).toFixed(1)}K` : ch.liquidity.toFixed(0)}
+              </span>
+              <span class="cs-lbl">Liquidity</span>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .sec-chains {
+    padding: 2rem 0 1rem;
+    position: relative;
+  }
+
+  .sec-chains::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,240,255,0.08), transparent);
+  }
+
+  .sec-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(0,240,255,0.6);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .sec-title::before { content: '// '; color: rgba(0,240,255,0.25); }
+  .sec-title::after { content: ' //'; color: rgba(0,240,255,0.25); }
+
+  .chain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .chain-card {
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(10,12,20,0.8), rgba(8,10,18,0.9));
+    border: 1px solid rgba(0,240,255,0.05);
+    border-radius: 8px;
+    opacity: 0;
+    transform: scale(0.92);
+    animation: cardPop 0.45s ease forwards;
+    animation-delay: calc(var(--i) * 0.1s);
+    transition: all 0.25s;
+  }
+
+  .chain-card:hover {
+    border-color: rgba(0,240,255,0.12);
+    background: rgba(12,16,28,0.95);
+    transform: scale(1);
+  }
+
+  @keyframes cardPop {
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .chain-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+  }
+
+  .chain-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #c8d8e8;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .chain-badge {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    border: 1px solid;
+    font-weight: 500;
+  }
+
+  .chain-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .chain-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .chain-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.8s ease;
+    box-shadow: 0 0 6px currentColor;
+  }
+
+  .chain-pct {
+    font-size: 0.65rem;
+    color: #4a5a6a;
+    font-variant-numeric: tabular-nums;
+    min-width: 2rem;
+    text-align: right;
+  }
+
+  .chain-stats {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .chain-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+  }
+
+  .cs-val {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #d0dce8;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cs-lbl {
+    font-size: 0.55rem;
+    color: #3a4a5a;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 0.05rem;
+  }
+</style>
