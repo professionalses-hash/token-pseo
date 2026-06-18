@@ -84,11 +84,17 @@
     position: relative;
     display: inline-block;
     left: 50%;
-    transform: translateX(-50%);
+    opacity: 0;
+    animation: secSlide 0.7s ease forwards;
   }
 
   .section-title::before { content: '// '; color: rgba(0,240,255,0.25); }
   .section-title::after { content: ' //'; color: rgba(0,240,255,0.25); }
+
+  @keyframes secSlide {
+    0% { opacity: 0; transform: translateX(calc(-50% - 30px)); filter: blur(4px); color: #003355; }
+    100% { opacity: 1; transform: translateX(-50%); filter: blur(0); color: rgba(0,240,255,0.6); }
+  }
 
   .features-grid {
     display: grid;

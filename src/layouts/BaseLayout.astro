@@ -55,6 +55,87 @@ const { title, description, canonical } = Astro.props;
         pointer-events: none;
         z-index: 0;
       }
+
+      .wireframe {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+        perspective: 1000px;
+      }
+
+      .wireframe-grid {
+        position: absolute;
+        left: -50%;
+        right: -50%;
+        bottom: -20%;
+        top: -50%;
+        background-image:
+          linear-gradient(rgba(0,240,255,0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,240,255,0.025) 1px, transparent 1px);
+        background-size: 64px 64px;
+        transform: rotateX(72deg);
+        transform-origin: center bottom;
+        animation: wireScroll 24s linear infinite;
+      }
+
+      @keyframes wireScroll {
+        0% { transform: rotateX(72deg) translateY(0); }
+        100% { transform: rotateX(72deg) translateY(64px); }
+      }
+
+      .wireframe-nodes {
+        position: absolute;
+        left: 0; right: 0; top: 0; bottom: 0;
+        background-image:
+          radial-gradient(1.5px 1.5px at 10% 12%, rgba(0,240,255,0.25) 50%, transparent 50%),
+          radial-gradient(1.5px 1.5px at 25% 55%, rgba(0,240,255,0.15) 50%, transparent 50%),
+          radial-gradient(1.5px 1.5px at 40% 22%, rgba(0,240,255,0.2) 50%, transparent 50%),
+          radial-gradient(1.5px 1.5px at 55% 70%, rgba(0,240,255,0.15) 50%, transparent 50%),
+          radial-gradient(1.5px 1.5px at 70% 15%, rgba(0,240,255,0.2) 50%, transparent 50%),
+          radial-gradient(1.5px 1.5px at 85% 45%, rgba(0,240,255,0.18) 50%, transparent 50%),
+          radial-gradient(1.5px 1.5px at 15% 80%, rgba(0,240,255,0.12) 50%, transparent 50%),
+          radial-gradient(1.5px 1.5px at 65% 90%, rgba(0,240,255,0.15) 50%, transparent 50%),
+          radial-gradient(2px 2px at 35% 40%, rgba(0,240,255,0.35) 50%, transparent 50%),
+          radial-gradient(2px 2px at 78% 62%, rgba(0,240,255,0.3) 50%, transparent 50%),
+          radial-gradient(1.5px 1.5px at 5% 35%, rgba(0,240,255,0.1) 50%, transparent 50%),
+          radial-gradient(1.5px 1.5px at 92% 8%, rgba(0,240,255,0.12) 50%, transparent 50%),
+          radial-gradient(1.5px 1.5px at 48% 88%, rgba(0,240,255,0.18) 50%, transparent 50%),
+          radial-gradient(2px 2px at 60% 35%, rgba(0,240,255,0.25) 50%, transparent 50%),
+          radial-gradient(1.5px 1.5px at 20% 95%, rgba(0,240,255,0.1) 50%, transparent 50%);
+        animation: nodePulse 5s ease-in-out infinite alternate;
+      }
+
+      @keyframes nodePulse {
+        0% { opacity: 0.6; }
+        100% { opacity: 1; }
+      }
+
+      .wireframe-beam {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent 0%, rgba(0,240,255,0.06) 50%, transparent 100%);
+        animation: beamSweep 8s linear infinite;
+        filter: blur(2px);
+      }
+
+      @keyframes beamSweep {
+        0% { transform: translateY(-10vh); opacity: 0; }
+        5% { opacity: 1; }
+        95% { opacity: 1; }
+        100% { transform: translateY(110vh); opacity: 0; }
+      }
+
+      .wireframe-beam:nth-child(3) {
+        animation-delay: 4s;
+        background: linear-gradient(90deg, transparent 0%, rgba(0,240,255,0.04) 50%, transparent 100%);
+        height: 2px;
+      }
+
       .container {
         max-width: 1100px;
         margin: 0 auto;
@@ -72,6 +153,12 @@ const { title, description, canonical } = Astro.props;
     </style>
   </head>
   <body>
+    <div class="wireframe" aria-hidden="true">
+      <div class="wireframe-grid"></div>
+      <div class="wireframe-nodes"></div>
+      <div class="wireframe-beam"></div>
+      <div class="wireframe-beam"></div>
+    </div>
     <NavBar />
     <div class="container">
       <slot />

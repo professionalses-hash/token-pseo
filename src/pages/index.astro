@@ -7,6 +7,7 @@ import LatestTokens from "../components/LatestTokens.astro";
 import SecurityDashboard from "../components/SecurityDashboard.astro";
 import ChainExplorer from "../components/ChainExplorer.astro";
 import MarketPulse from "../components/MarketPulse.astro";
+import ContactReview from "../components/ContactReview.astro";
 
 const tokens = Object.values(
   import.meta.glob("../../data/tokens.json", { eager: true })
@@ -29,4 +30,6 @@ const tokenList = tokens;
   <ChainExplorer tokens={tokenList} />
 
   <MarketPulse tokens={tokenList} />
+
+  <ContactReview />
 </BaseLayout>

@@ -51,6 +51,15 @@ const dup = [...hot, ...hot];
     margin-bottom: 0.75rem;
     padding: 0 0.25rem;
   }
+  .hot-header {
+    opacity: 0;
+    animation: hotFade 0.5s ease forwards;
+  }
+
+  @keyframes hotFade {
+    to { opacity: 1; }
+  }
+
   .hot-label {
     font-size: 0.7rem;
     font-weight: 600;
