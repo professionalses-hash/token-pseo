@@ -1,8 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import TokenCard from "../components/TokenCard.astro";
 import HotStrip from "../components/HotStrip.astro";
 import HeroSlider from "../components/HeroSlider.astro";
+import Features from "../components/Features.astro";
+import LatestTokens from "../components/LatestTokens.astro";
 
 const tokens = Object.values(
   import.meta.glob("../../data/tokens.json", { eager: true })
@@ -16,57 +17,7 @@ const tokenList = tokens;
 
   <HotStrip tokens={tokenList} />
 
-  <section class="list">
-    <div class="list-header">
-      <h2>Token Audit Index</h2>
-      <span class="list-count">{tokenList.length} tokens</span>
-    </div>
-    {tokenList.length === 0 && <p class="empty">No tokens loaded yet. Run the scraper first.</p>}
-    <div class="grid">
-      {tokenList.map((t) => (
-        <TokenCard
-          name={t.name}
-          symbol={t.symbol}
-          network={t.network || t.chain}
-          trustScore={t.trustScore}
-          priceUsd={t.market.priceUsd}
-          marketCap={t.market.marketCap}
-          liquidityUsd={t.market.liquidityUsd}
-          slug={t.slug}
-        />
-      ))}
-    </div>
-  </section>
-</BaseLayout>
+  <Features />
 
-<style>
-  .list-header {
-    display: flex;
-    align-items: baseline;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding: 0 0.25rem;
-  }
-  .list-header h2 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #ddd;
-  }
-  .list-count {
-    font-size: 0.8rem;
-    color: #555;
-  }
-  .grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-  .empty {
-    text-align: center;
-    color: #666;
-    padding: 3rem 0;
-  }
-  @media (max-width: 600px) {
-    h1 { font-size: 1.75rem; }
-  }
-</style>
+  <LatestTokens tokens={tokenList} />
+</BaseLayout>

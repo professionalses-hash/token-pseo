@@ -1,0 +1,149 @@
+<section class="features">
+  <div class="features-inner">
+    <h2 class="section-title">What We Provide</h2>
+    <div class="features-grid">
+      <div class="feature-card" style="--i:0">
+        <div class="feat-icon">
+          <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+            <rect x="4" y="4" width="32" height="32" rx="8" stroke="#6c8cff" stroke-width="2"/>
+            <path d="M14 20l4 4 8-8" stroke="#6c8cff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="feat-title">Security Audits</h3>
+        <p class="feat-desc">Real-time trust scores, honeypot detection, liquidity checks, and mint authority analysis across Ethereum, BSC &amp; Solana.</p>
+        <ul class="feat-list">
+          <li>Trust Score 0–100 algorithm</li>
+          <li>9 security checkpoints per token</li>
+          <li>Color-coded risk badges</li>
+        </ul>
+      </div>
+      <div class="feature-card" style="--i:1">
+        <div class="feat-icon">
+          <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+            <rect x="4" y="4" width="32" height="32" rx="8" stroke="#44cc66" stroke-width="2"/>
+            <path d="M10 28l6-8 5 4 9-12" stroke="#44cc66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="28" cy="16" r="2" fill="#44cc66"/>
+          </svg>
+        </div>
+        <h3 class="feat-title">Live Charts &amp; Data</h3>
+        <p class="feat-desc">Real-time price, market cap, liquidity, and volume charts powered by DexScreener. Up-to-date market data on every token page.</p>
+        <ul class="feat-list">
+          <li>Embedded DexScreener charts</li>
+          <li>Market cap &amp; liquidity tracking</li>
+          <li>24h volume &amp; price action</li>
+        </ul>
+      </div>
+      <div class="feature-card" style="--i:2">
+        <div class="feat-icon">
+          <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+            <rect x="4" y="4" width="32" height="32" rx="8" stroke="#ccaa22" stroke-width="2"/>
+            <path d="M14 14h12v4l-4 2v4l4 2v4H14v-4l4-2v-4l-4-2v-4z" stroke="#ccaa22" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="feat-title">Swap Widget</h3>
+        <p class="feat-desc">Built-in swap widget with affiliate links on every token page. Trade directly while supporting the platform.</p>
+        <ul class="feat-list">
+          <li>Thirdweb powered swap</li>
+          <li>Affiliate referral links</li>
+          <li>Multi-chain DEX routing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .features {
+    padding: 3rem 0 2rem;
+  }
+
+  .features-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ddd;
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .feature-card {
+    background: linear-gradient(135deg, rgba(26,26,36,0.7), rgba(22,22,32,0.8));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 1.5rem 1.25rem;
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeUp 0.6s ease forwards;
+    animation-delay: calc(var(--i) * 0.15s);
+    transition: all 0.3s ease;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(108,140,255,0.2);
+    transform: translateY(-3px);
+    background: rgba(30,30,42,0.95);
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .feat-icon {
+    margin-bottom: 0.75rem;
+  }
+
+  .feat-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .feat-desc {
+    font-size: 0.8rem;
+    color: #888;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+
+  .feat-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .feat-list li {
+    font-size: 0.75rem;
+    color: #666;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .feat-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.4em;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #6c8cff;
+  }
+
+  @media (max-width: 700px) {
+    .features-grid { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,229 @@
+---
+interface Token {
+  name: string;
+  symbol: string;
+  trustScore: number;
+  slug: string;
+  network?: string;
+  chain?: string;
+  market?: {
+    priceUsd?: number;
+    marketCap?: number;
+    liquidityUsd?: number;
+    volume24h?: number;
+  };
+  security?: {
+    contractAgeDays?: number;
+  };
+}
+
+interface Props {
+  tokens: Token[];
+}
+
+const { tokens } = Astro.props;
+
+const sorted = [...tokens]
+  .filter((t) => t.security?.contractAgeDays != null)
+  .sort((a, b) => (a.security?.contractAgeDays ?? 9999) - (b.security?.contractAgeDays ?? 9999));
+
+const remaining = tokens.filter((t) => t.security?.contractAgeDays == null).reverse();
+
+const newest = [...sorted, ...remaining].slice(0, 10);
+
+function scoreColor(s: number) {
+  return s >= 86 ? "#4488ff" : s >= 70 ? "#44cc66" : s >= 31 ? "#ccaa22" : "#dd4444";
+}
+
+function fmtPrice(n?: number): string {
+  if (n == null) return "-";
+  if (n < 0.0001) return `$${n.toExponential(2)}`;
+  if (n < 1) return `$${n.toFixed(6)}`;
+  return `$${n.toFixed(4)}`;
+}
+---
+
+<section class="latest">
+  <div class="latest-header">
+    <h2 class="section-title">Newest Discoveries</h2>
+    <span class="latest-sub">Recently detected tokens across all chains</span>
+  </div>
+  <div class="latest-grid">
+    {newest.map((t, i) => (
+      <a href={`/token/${t.slug}`} class="latest-card" style={`--i:${i}`}>
+        <div class="lc-left">
+          <span class="lc-rank">{String(i + 1).padStart(2, "0")}</span>
+          <div class="lc-info">
+            <span class="lc-name">{t.name}</span>
+            <span class="lc-sym">{t.symbol}</span>
+          </div>
+        </div>
+        <div class="lc-mid">
+          <span class="lc-network">{t.network || t.chain || "?"}</span>
+          <span class="lc-price">{fmtPrice(t.market?.priceUsd)}</span>
+        </div>
+        <div class="lc-right">
+          <span class="lc-score" style={{ color: scoreColor(t.trustScore) }}>{t.trustScore}</span>
+          <div class="lc-bar-bg">
+            <div class="lc-bar" style={`width:${t.trustScore}%;background:${scoreColor(t.trustScore)}`}></div>
+          </div>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .latest {
+    padding: 2rem 0 3rem;
+  }
+
+  .latest-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ddd;
+    letter-spacing: -0.02em;
+  }
+
+  .latest-sub {
+    font-size: 0.8rem;
+    color: #666;
+    display: block;
+    margin-top: 0.3rem;
+  }
+
+  .latest-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .latest-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 1rem;
+    background: linear-gradient(135deg, rgba(26,26,36,0.6), rgba(22,22,32,0.7));
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateX(-12px);
+    animation: slideIn 0.4s ease forwards;
+    animation-delay: calc(var(--i) * 0.06s);
+    transition: all 0.2s ease;
+  }
+
+  .latest-card:hover {
+    border-color: rgba(108,140,255,0.2);
+    background: rgba(30,30,42,0.9);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+
+  @keyframes slideIn {
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .lc-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .lc-rank {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #444;
+    font-variant-numeric: tabular-nums;
+    width: 1.6rem;
+    flex-shrink: 0;
+  }
+
+  .lc-info {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .lc-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .lc-sym {
+    font-size: 0.7rem;
+    color: #666;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .lc-mid {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .lc-network {
+    font-size: 0.6rem;
+    background: rgba(255,255,255,0.06);
+    color: #888;
+    padding: 0.05rem 0.4rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .lc-price {
+    font-size: 0.7rem;
+    color: #777;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lc-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .lc-score {
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    width: 1.8rem;
+    text-align: right;
+  }
+
+  .lc-bar-bg {
+    width: 48px;
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .lc-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+
+  @media (max-width: 600px) {
+    .lc-mid { display: none; }
+  }
+</style>
