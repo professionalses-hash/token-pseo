@@ -2,7 +2,7 @@
 const chains = ["Ethereum", "BSC", "Solana", "Polygon", "Arbitrum", "Avalanche", "Base", "Other"];
 ---
 
-<section class="sec-cr">
+<section class="sec-cr" data-animate>
   <h2 class="sec-title">Contact & Review</h2>
   <div class="cr-grid">
     <div class="cr-card" style="--i:0">
@@ -77,6 +77,8 @@ const chains = ["Ethereum", "BSC", "Solana", "Polygon", "Arbitrum", "Avalanche",
     margin-bottom: 1.5rem;
     opacity: 0;
     transform: translateY(-20px);
+  }
+  [data-viewed] .sec-title {
     animation: secDrop 0.6s ease forwards;
   }
   .sec-title::before { content: '// '; color: rgba(0,240,255,0.25); }
@@ -103,6 +105,8 @@ const chains = ["Ethereum", "BSC", "Solana", "Polygon", "Arbitrum", "Avalanche",
     overflow: hidden;
     opacity: 0;
     transform: translateY(20px);
+  }
+  [data-viewed] .cr-card {
     animation: crIn 0.5s ease forwards;
     animation-delay: calc(var(--i) * 0.15s);
     transition: all 0.25s;

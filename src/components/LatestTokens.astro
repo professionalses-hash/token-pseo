@@ -43,7 +43,7 @@ function fmtPrice(n?: number): string {
 }
 ---
 
-<section class="latest">
+<section class="latest" data-animate>
   <div class="latest-header">
     <h2 class="section-title">Newest Discoveries</h2>
     <span class="latest-sub">Recently detected tokens across all chains</span>
@@ -102,6 +102,8 @@ function fmtPrice(n?: number): string {
     text-transform: uppercase;
     opacity: 0;
     transform: translateY(-18px);
+  }
+  [data-viewed] .section-title {
     animation: secDrop 0.6s ease forwards;
   }
 
@@ -138,6 +140,8 @@ function fmtPrice(n?: number): string {
     border-radius: 6px;
     opacity: 0;
     transform: translateX(-12px);
+  }
+  [data-viewed] .latest-card {
     animation: slideIn 0.4s ease forwards;
     animation-delay: calc(var(--i) * 0.06s + 0.8s);
     transition: all 0.2s ease;

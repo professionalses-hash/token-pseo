@@ -15,7 +15,7 @@ const hot = tokens.sort((a, b) => b.trustScore - a.trustScore).slice(0, 12);
 const dup = [...hot, ...hot];
 ---
 
-<section class="hot-section">
+<section class="hot-section" data-animate>
   <div class="hot-header">
     <span class="hot-label">Hot Tokens</span>
     <span class="hot-count">{hot.length}</span>
@@ -53,6 +53,8 @@ const dup = [...hot, ...hot];
   }
   .hot-header {
     opacity: 0;
+  }
+  [data-viewed] .hot-header {
     animation: hotFade 0.5s ease forwards;
   }
 

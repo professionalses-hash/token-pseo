@@ -71,17 +71,17 @@ const { title, description, canonical } = Astro.props;
         bottom: -20%;
         top: -50%;
         background-image:
-          linear-gradient(rgba(0,240,255,0.02) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0,240,255,0.02) 1px, transparent 1px);
-        background-size: 64px 64px;
-        transform: rotateX(72deg);
+          linear-gradient(rgba(0,240,255,0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,240,255,0.045) 1px, transparent 1px);
+        background-size: 48px 48px;
+        transform: rotateX(75deg);
         transform-origin: center bottom;
-        animation: wireScroll 24s linear infinite;
+        animation: wireScroll 20s linear infinite;
       }
 
       @keyframes wireScroll {
-        0% { transform: rotateX(72deg) translateY(0); }
-        100% { transform: rotateX(72deg) translateY(64px); }
+        0% { transform: rotateX(75deg) translateY(0); }
+        100% { transform: rotateX(75deg) translateY(48px); }
       }
 
       .wireframe-svg {
@@ -89,62 +89,114 @@ const { title, description, canonical } = Astro.props;
         inset: 0;
         width: 100%;
         height: 100%;
-        opacity: 0.5;
+        opacity: 0.6;
       }
 
-      .wireframe-svg path {
-        fill: none;
+      .wireframe-svg path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+      .wireframe-svg .cable-glow {
         stroke: rgba(0,240,255,0.08);
-        stroke-width: 1;
+        stroke-width: 6;
+        filter: blur(4px);
+      }
+      .wireframe-svg .cable-core {
+        stroke: rgba(0,240,255,0.28);
+        stroke-width: 1.8;
+      }
+      .wireframe-svg .cable-branch-glow {
+        stroke: rgba(0,200,255,0.05);
+        stroke-width: 4;
+        filter: blur(3px);
+      }
+      .wireframe-svg .cable-branch-core {
+        stroke: rgba(0,200,255,0.18);
+        stroke-width: 1.2;
       }
 
-      .wireframe-svg .wire-pulse {
-        stroke: rgba(0,240,255,0.18);
+      .wireframe-svg .cable-accent-glow {
+        stroke: rgba(0,240,255,0.12);
+        stroke-width: 5;
+        filter: blur(3px);
+      }
+      .wireframe-svg .cable-accent-core {
+        stroke: rgba(0,240,255,0.35);
         stroke-width: 1.5;
-        stroke-dasharray: 6 40;
-        animation: dataFlow 4s linear infinite;
       }
 
-      .wireframe-svg .wire-pulse:nth-child(2) { animation-delay: 1s; }
-      .wireframe-svg .wire-pulse:nth-child(3) { animation-delay: 2s; }
-      .wireframe-svg .wire-pulse:nth-child(4) { animation-delay: 3s; }
+      .wireframe-svg .data-pulse {
+        stroke: rgba(0,240,255,0.7);
+        stroke-width: 2;
+        stroke-dasharray: 4 60;
+        animation: dataFlow 3s linear infinite;
+      }
+      .wireframe-svg .data-pulse:nth-child(2) { animation-delay: 0.8s; }
+      .wireframe-svg .data-pulse:nth-child(3) { animation-delay: 1.6s; }
+      .wireframe-svg .data-pulse:nth-child(4) { animation-delay: 2.4s; }
+      .wireframe-svg .data-pulse-slow {
+        stroke: rgba(100,200,255,0.5);
+        stroke-width: 1.5;
+        stroke-dasharray: 3 50;
+        animation: dataFlow 5s linear infinite;
+      }
 
       @keyframes dataFlow {
         0% { stroke-dashoffset: 0; opacity: 0; }
-        10% { opacity: 1; }
-        90% { opacity: 1; }
-        100% { stroke-dashoffset: -100; opacity: 0; }
+        12% { opacity: 1; }
+        85% { opacity: 1; }
+        100% { stroke-dashoffset: -120; opacity: 0; }
       }
 
-      .wireframe-svg .wire-glow {
-        stroke: rgba(0,240,255,0.04);
-        stroke-width: 3;
-        filter: blur(3px);
-        animation: glowPulse 6s ease-in-out infinite alternate;
+      .wireframe-svg .arc-glow {
+        stroke: rgba(0,240,255,0.06);
+        stroke-width: 8;
+        filter: blur(5px);
+        animation: arcPulse 3s ease-in-out infinite alternate;
       }
-
-      @keyframes glowPulse {
-        0% { opacity: 0.3; }
+      .wireframe-svg .arc-core {
+        stroke: rgba(0,240,255,0.2);
+        stroke-width: 1.5;
+        animation: arcPulse 3s ease-in-out infinite alternate;
+      }
+      @keyframes arcPulse {
+        0% { opacity: 0.4; }
         100% { opacity: 1; }
       }
 
-      .wireframe-svg circle {
-        fill: rgba(0,240,255,0.06);
-        stroke: rgba(0,240,255,0.1);
+      .wireframe-svg .spark {
+        fill: rgba(0,240,255,0.5);
+        animation: sparkFlicker 2s ease-in-out infinite alternate;
+      }
+      .wireframe-svg .spark:nth-child(even) { animation-delay: 0.7s; }
+      .wireframe-svg .spark:nth-child(3n) { animation-delay: 1.3s; }
+      @keyframes sparkFlicker {
+        0% { opacity: 0.1; r: 1.5; }
+        50% { opacity: 0.9; r: 2.5; }
+        100% { opacity: 0.3; r: 1.8; }
+      }
+
+      .wireframe-svg circle.node {
+        fill: rgba(0,240,255,0.08);
+        stroke: rgba(0,240,255,0.15);
         stroke-width: 0.5;
       }
-
       .wireframe-svg .node-core {
-        fill: rgba(0,240,255,0.3);
+        fill: rgba(0,240,255,0.4);
         stroke: none;
-        animation: nodeCore 4s ease-in-out infinite alternate;
+        animation: nodePulse 3s ease-in-out infinite alternate;
       }
-
-      .wireframe-svg .node-core:nth-child(even) { animation-delay: 2s; }
-
-      @keyframes nodeCore {
-        0% { opacity: 0.2; r: 1.5; }
-        100% { opacity: 0.8; r: 2.5; }
+      .wireframe-svg .node-core:nth-child(even) { animation-delay: 1.5s; }
+      .wireframe-svg .node-core-bright {
+        fill: #00f0ff;
+        stroke: none;
+        animation: nodeBright 2.5s ease-in-out infinite alternate;
+      }
+      @keyframes nodePulse {
+        0% { opacity: 0.3; r: 2; }
+        100% { opacity: 0.9; r: 3.5; }
+      }
+      @keyframes nodeBright {
+        0% { opacity: 0.4; r: 1.5; }
+        100% { opacity: 1; r: 3; }
       }
 
       .container {
@@ -168,65 +220,159 @@ const { title, description, canonical } = Astro.props;
       <div class="wireframe-grid"></div>
       <svg class="wireframe-svg" viewBox="0 0 1000 800" preserveAspectRatio="none">
         <defs>
-          <filter id="wgBlur"><feGaussianBlur stdDeviation="1.5"/></filter>
+          <filter id="wgBlur"><feGaussianBlur stdDeviation="2.5"/></filter>
+          <filter id="wgBlurLight"><feGaussianBlur stdDeviation="1.5"/></filter>
         </defs>
-        <g filter="url(#wgBlur)">
-          <path d="M50,100 L150,320 L300,144 L450,440 L600,220 L750,380 L880,120" class="wire-glow"/>
-          <path d="M50,100 L150,320 L300,144 L450,440 L600,220 L750,380 L880,120" class="wire-pulse"/>
-          <path d="M50,100 L150,320 L300,144 L450,440 L600,220 L750,380 L880,120" class="wire-pulse"/>
+
+        <!-- ===== MAIN CABLE RUN 1 (top) ===== -->
+        <filter id="wgBlur"><feGaussianBlur stdDeviation="2.5"/></filter>
+        <filter id="wgBlurLight"><feGaussianBlur stdDeviation="1.5"/></filter>
+        <g>
+          <path d="M-20,140 C120,200 250,90 400,160 C520,220 650,130 800,180 C900,210 980,160 1020,190" class="cable-glow"/>
+          <path d="M-20,140 C120,200 250,90 400,160 C520,220 650,130 800,180 C900,210 980,160 1020,190" class="cable-core"/>
+          <path d="M-20,140 C120,200 250,90 400,160 C520,220 650,130 800,180 C900,210 980,160 1020,190" class="data-pulse"/>
+          <path d="M-20,140 C120,200 250,90 400,160 C520,220 650,130 800,180 C900,210 980,160 1020,190" class="data-pulse"/>
         </g>
-        <g filter="url(#wgBlur)">
-          <path d="M100,60 L250,150 L420,80 L550,180 L700,100 L920,50" class="wire-glow"/>
-          <path d="M100,60 L250,150 L420,80 L550,180 L700,100 L920,50" class="wire-pulse"/>
-          <path d="M100,60 L250,150 L420,80 L550,180 L700,100 L920,50" class="wire-pulse"/>
+
+        <!-- ===== MAIN CABLE RUN 2 (mid) ===== -->
+        <g>
+          <path d="M-20,370 C150,310 280,440 450,360 C580,300 720,420 880,350 C940,320 990,380 1020,340" class="cable-glow"/>
+          <path d="M-20,370 C150,310 280,440 450,360 C580,300 720,420 880,350 C940,320 990,380 1020,340" class="cable-core"/>
+          <path d="M-20,370 C150,310 280,440 450,360 C580,300 720,420 880,350 C940,320 990,380 1020,340" class="data-pulse"/>
+          <path d="M-20,370 C150,310 280,440 450,360 C580,300 720,420 880,350 C940,320 990,380 1020,340" class="data-pulse"/>
         </g>
-        <g filter="url(#wgBlur)">
-          <path d="M100,60 L50,100 M250,150 L150,320 M420,80 L300,144 M550,180 L600,220 M700,100 L750,380 M920,50 L880,120" class="wire-glow"/>
-          <path d="M100,60 L50,100 M250,150 L150,320 M420,80 L300,144 M550,180 L600,220 M700,100 L750,380 M920,50 L880,120" class="wire-pulse"/>
+
+        <!-- ===== MAIN CABLE RUN 3 (bottom) ===== -->
+        <g>
+          <path d="M-20,620 C130,550 260,680 430,590 C560,530 700,660 850,580 C930,545 980,610 1020,570" class="cable-glow"/>
+          <path d="M-20,620 C130,550 260,680 430,590 C560,530 700,660 850,580 C930,545 980,610 1020,570" class="cable-core"/>
+          <path d="M-20,620 C130,550 260,680 430,590 C560,530 700,660 850,580 C930,545 980,610 1020,570" class="data-pulse"/>
         </g>
-        <g filter="url(#wgBlur)">
-          <path d="M150,320 L100,480 L50,100 M300,144 L450,440 L600,220 M750,380 L820,700 L880,120 M450,440 L350,600 L200,700 L100,480 M600,220 L700,720 L820,700 M150,320 L350,600 M300,144 L200,700" class="wire-glow"/>
-          <path d="M150,320 L100,480 L50,100 M300,144 L450,440 L600,220 M750,380 L820,700 L880,120 M450,440 L350,600 L200,700 L100,480 M600,220 L700,720 L820,700 M150,320 L350,600 M300,144 L200,700" class="wire-pulse"/>
-          <path d="M150,320 L100,480 L50,100 M300,144 L450,440 L600,220 M750,380 L820,700 L880,120 M450,440 L350,600 L200,700 L100,480 M600,220 L700,720 L820,700 M150,320 L350,600 M300,144 L200,700" class="wire-pulse"/>
+
+        <!-- ===== ACCENT CABLE (vertical-ish arc left) ===== -->
+        <g>
+          <path d="M80,50 C60,180 130,250 90,380 C60,470 140,530 80,660 C50,720 110,770 80,800" class="cable-accent-glow"/>
+          <path d="M80,50 C60,180 130,250 90,380 C60,470 140,530 80,660 C50,720 110,770 80,800" class="cable-accent-core"/>
+          <path d="M80,50 C60,180 130,250 90,380 C60,470 140,530 80,660 C50,720 110,770 80,800" class="data-pulse-slow"/>
         </g>
-        <g filter="url(#wgBlur)">
-          <path d="M150,320 L250,150 M300,144 L420,80 M600,220 L550,180 M750,380 L700,100 M880,120 L920,50 M820,700 L920,50 M700,720 L920,50" class="wire-glow"/>
-          <path d="M150,320 L250,150 M300,144 L420,80 M600,220 L550,180 M750,380 L700,100 M880,120 L920,50 M820,700 L920,50 M700,720 L920,50" class="wire-pulse"/>
+
+        <!-- ===== ACCENT CABLE (vertical-ish arc right) ===== -->
+        <g>
+          <path d="M920,50 C940,180 870,250 910,380 C940,470 860,530 920,660 C950,720 890,770 920,800" class="cable-accent-glow"/>
+          <path d="M920,50 C940,180 870,250 910,380 C940,470 860,530 920,660 C950,720 890,770 920,800" class="cable-accent-core"/>
+          <path d="M920,50 C940,180 870,250 910,380 C940,470 860,530 920,660 C950,720 890,770 920,800" class="data-pulse-slow"/>
         </g>
-        <g filter="url(#wgBlur)">
-          <path d="M100,60 L300,144 L450,440 L600,220 L750,380 L880,120" class="wire-glow"/>
-          <path d="M100,60 L300,144 L450,440 L600,220 L750,380 L880,120" class="wire-pulse"/>
+
+        <!-- ===== BRANCH CABLES: trunk 1 → trunk 2 ===== -->
+        <g>
+          <path d="M150,170 C160,250 180,300 165,360" class="cable-branch-glow"/>
+          <path d="M150,170 C160,250 180,300 165,360" class="cable-branch-core"/>
+          <path d="M380,155 C370,230 390,290 375,360" class="cable-branch-glow"/>
+          <path d="M380,155 C370,230 390,290 375,360" class="cable-branch-core"/>
+          <path d="M700,165 C710,250 690,310 705,370" class="cable-branch-glow"/>
+          <path d="M700,165 C710,250 690,310 705,370" class="cable-branch-core"/>
+          <path d="M900,200 C910,260 890,300 905,340" class="cable-branch-glow"/>
+          <path d="M900,200 C910,260 890,300 905,340" class="cable-branch-core"/>
         </g>
-        <circle cx="50" cy="100" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
-        <circle cx="150" cy="320" r="7" fill="rgba(0,240,255,0.05)" stroke="rgba(0,240,255,0.1)"/>
-        <circle cx="300" cy="144" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
-        <circle cx="450" cy="440" r="8" fill="rgba(0,240,255,0.06)" stroke="rgba(0,240,255,0.12)"/>
-        <circle cx="600" cy="220" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
-        <circle cx="750" cy="380" r="7" fill="rgba(0,240,255,0.05)" stroke="rgba(0,240,255,0.1)"/>
-        <circle cx="880" cy="120" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
-        <circle cx="100" cy="60" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
-        <circle cx="250" cy="150" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
-        <circle cx="420" cy="80" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
-        <circle cx="550" cy="180" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
-        <circle cx="700" cy="100" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
-        <circle cx="920" cy="50" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
-        <circle cx="100" cy="480" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
-        <circle cx="350" cy="600" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
-        <circle cx="200" cy="700" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
-        <circle cx="820" cy="700" r="6" fill="rgba(0,240,255,0.04)" stroke="rgba(0,240,255,0.08)"/>
-        <circle cx="700" cy="720" r="5" fill="rgba(0,240,255,0.03)" stroke="rgba(0,240,255,0.06)"/>
-        <circle cx="450" cy="440" r="2.5" class="node-core"/>
-        <circle cx="150" cy="320" r="2" class="node-core"/>
-        <circle cx="750" cy="380" r="2" class="node-core"/>
-        <circle cx="300" cy="144" r="1.5" class="node-core"/>
-        <circle cx="600" cy="220" r="1.5" class="node-core"/>
-        <circle cx="350" cy="600" r="2" class="node-core"/>
-        <circle cx="820" cy="700" r="2" class="node-core"/>
+
+        <!-- ===== BRANCH CABLES: trunk 2 → trunk 3 ===== -->
+        <g>
+          <path d="M260,390 C270,460 250,540 265,600" class="cable-branch-glow"/>
+          <path d="M260,390 C270,460 250,540 265,600" class="cable-branch-core"/>
+          <path d="M540,360 C550,450 530,520 545,590" class="cable-branch-glow"/>
+          <path d="M540,360 C550,450 530,520 545,590" class="cable-branch-core"/>
+          <path d="M810,360 C800,450 820,520 810,580" class="cable-branch-glow"/>
+          <path d="M810,360 C800,450 820,520 810,580" class="cable-branch-core"/>
+        </g>
+
+        <!-- ===== CROSS CONNECTS (diagonal mesh) ===== -->
+        <g>
+          <path d="M150,170 C250,250 300,300 375,360" class="cable-branch-glow"/>
+          <path d="M150,170 C250,250 300,300 375,360" class="cable-branch-core"/>
+          <path d="M700,165 C600,260 550,330 540,360" class="cable-branch-glow"/>
+          <path d="M700,165 C600,260 550,330 540,360" class="cable-branch-core"/>
+          <path d="M380,155 C430,290 470,450 545,590" class="cable-branch-glow"/>
+          <path d="M380,155 C430,290 470,450 545,590" class="cable-branch-core"/>
+          <path d="M265,600 C350,500 450,420 540,360" class="cable-branch-glow"/>
+          <path d="M265,600 C350,500 450,420 540,360" class="cable-branch-core"/>
+        </g>
+
+        <!-- ===== ELECTRIC ARC / SPARK DISCHARGE (left) ===== -->
+        <g>
+          <path d="M90,250 L110,270 L85,295 L115,325 L90,355" class="arc-glow"/>
+          <path d="M90,250 L110,270 L85,295 L115,325 L90,355" class="arc-core"/>
+        </g>
+        <!-- ===== ELECTRIC ARC (right) ===== -->
+        <g>
+          <path d="M880,420 L900,400 L880,375 L910,350 L890,320" class="arc-glow"/>
+          <path d="M880,420 L900,400 L880,375 L910,350 L890,320" class="arc-core"/>
+        </g>
+        <!-- ===== ELECTRIC ARC (bottom) ===== -->
+        <g>
+          <path d="M450,530 L470,545 L445,565 L465,585 L440,605" class="arc-glow"/>
+          <path d="M450,530 L470,545 L445,565 L465,585 L440,605" class="arc-core"/>
+        </g>
+
+        <!-- ===== NODES ===== -->
+        <circle cx="150" cy="170" r="4" class="node"/>
+        <circle cx="380" cy="155" r="4" class="node"/>
+        <circle cx="700" cy="165" r="4" class="node"/>
+        <circle cx="900" cy="200" r="4" class="node"/>
+        <circle cx="165" cy="360" r="4" class="node"/>
+        <circle cx="375" cy="360" r="4" class="node"/>
+        <circle cx="540" cy="360" r="4" class="node"/>
+        <circle cx="705" cy="370" r="4" class="node"/>
+        <circle cx="905" cy="340" r="4" class="node"/>
+        <circle cx="265" cy="600" r="4" class="node"/>
+        <circle cx="545" cy="590" r="4" class="node"/>
+        <circle cx="810" cy="580" r="4" class="node"/>
+
+        <circle cx="90" cy="380" r="4" class="node"/>
+        <circle cx="80" cy="660" r="4" class="node"/>
+        <circle cx="910" cy="380" r="4" class="node"/>
+        <circle cx="920" cy="660" r="4" class="node"/>
+
+        <!-- ===== PULSING CORE NODES ===== -->
+        <circle cx="150" cy="170" r="2" class="node-core"/>
+        <circle cx="380" cy="155" r="2.5" class="node-core-bright"/>
+        <circle cx="700" cy="165" r="2" class="node-core"/>
+        <circle cx="165" cy="360" r="2.5" class="node-core-bright"/>
+        <circle cx="375" cy="360" r="2" class="node-core"/>
+        <circle cx="540" cy="360" r="2.5" class="node-core-bright"/>
+        <circle cx="705" cy="370" r="2" class="node-core"/>
+        <circle cx="265" cy="600" r="2.5" class="node-core-bright"/>
+        <circle cx="545" cy="590" r="2" class="node-core"/>
+        <circle cx="810" cy="580" r="2.5" class="node-core-bright"/>
+        <circle cx="90" cy="380" r="2" class="node-core"/>
+        <circle cx="80" cy="660" r="2" class="node-core-bright"/>
+        <circle cx="910" cy="380" r="2" class="node-core"/>
+        <circle cx="920" cy="660" r="2.5" class="node-core-bright"/>
+
+        <!-- ===== SPARKS / GLOW PARTICLES ===== -->
+        <circle cx="110" cy="270" r="2" class="spark"/>
+        <circle cx="85" cy="295" r="1.5" class="spark"/>
+        <circle cx="900" cy="400" r="2" class="spark"/>
+        <circle cx="880" cy="375" r="1.5" class="spark"/>
+        <circle cx="470" cy="545" r="2" class="spark"/>
+        <circle cx="445" cy="565" r="1.5" class="spark"/>
       </svg>
     </div>
     <NavBar />
     <div class="container">
       <slot />
     </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.setAttribute('data-viewed', '');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+      });
+    </script>
   </body>
 </html>

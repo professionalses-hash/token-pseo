@@ -41,7 +41,7 @@ const colors = ["#00f0ff", "#44cc66", "#ccaa22", "#ff4455", "#8888ff"];
 const totalTokens = tokens.length;
 ---
 
-<section class="sec-chains">
+<section class="sec-chains" data-animate>
   <h2 class="sec-title">Chain Distribution</h2>
   <div class="chain-grid">
     {chainData.map((ch, i) => {
@@ -109,6 +109,8 @@ const totalTokens = tokens.length;
     margin-bottom: 1.5rem;
     opacity: 0;
     transform: translateY(-20px);
+  }
+  [data-viewed] .sec-title {
     animation: secDrop 0.6s ease forwards;
   }
   .sec-title::before { content: '// '; color: rgba(0,240,255,0.25); }
@@ -133,6 +135,8 @@ const totalTokens = tokens.length;
     border-radius: 8px;
     opacity: 0;
     transform: scale(0.92);
+  }
+  [data-viewed] .chain-card {
     animation: cardPop 0.45s ease forwards;
     animation-delay: calc(var(--i) * 0.1s);
     transition: all 0.25s;
